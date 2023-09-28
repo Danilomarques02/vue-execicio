@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-main>
-      <v-app-bar color="green">Roberto</v-app-bar>
+      <v-app-bar color="green">Danilo</v-app-bar>
       <div>
         <v-card v-for="(message, index) in messages" :key="index" :class="message.nome !== 'Eu' ? 'teal accent-4' : 'purple accent-4'" outlined class="ma-3">
           <v-card-subtitle class="font-weight-bold">{{ message.nome }}</v-card-subtitle>
@@ -10,7 +10,7 @@
       </div>
     </v-main>
     <v-app-bar app fixed bottom color="#424242">
-      <v-text-field v-model="textInput" solo hide-details label="Enviar mensagem..."></v-text-field>
+      <v-text-field v-model="textInput" @keyup.enter="sendMessage()" solo hide-details label="Enviar mensagem..."></v-text-field>
       <v-btn @click="sendMessage()" icon color="blue">
         <v-icon>mdi-send</v-icon>
       </v-btn>
@@ -25,11 +25,11 @@ export default {
       textInput: '',
       messages: [
         {
-          nome: "Roberto",
+          nome: " Danilo",
           text: "Olá"
         },
         {
-          nome: "Roberto",
+          nome: "Danilo",
           text: "Tudo bem"
         },
       ],
@@ -43,6 +43,7 @@ export default {
 
           }
           this.messages.push(message)
+          this.textInput = ''
          }
         }
     }
