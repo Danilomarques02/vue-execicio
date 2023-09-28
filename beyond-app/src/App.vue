@@ -10,8 +10,8 @@
       </div>
     </v-main>
     <v-app-bar app fixed bottom color="#424242">
-      <v-text-field v-model=""solo hide-details label="Enviar mensagem..."></v-text-field>
-      <v-btn icon color="blue">
+      <v-text-field v-model="textInput" solo hide-details label="Enviar mensagem..."></v-text-field>
+      <v-btn @click="sendMessage()" icon color="blue">
         <v-icon>mdi-send</v-icon>
       </v-btn>
     </v-app-bar>
@@ -22,9 +22,9 @@
 export default {
   data() {
     return {
+      textInput: '',
       messages: [
         {
-          textInput: "",
           nome: "Roberto",
           text: "Olá"
         },
@@ -32,9 +32,18 @@ export default {
           nome: "Roberto",
           text: "Tudo bem"
         },
-       
-      ]
+      ],
     }
-  }
-}
+  },
+      methods:{
+         sendMessage(){
+          let message={
+            nome: 'Eu',
+            text: this.textInput
+
+          }
+          this.messages.push(message)
+         }
+        }
+    }
 </script>
