@@ -1,4 +1,3 @@
-
 <template>
   <v-app>
     <v-main>
@@ -7,13 +6,13 @@
         <div class="d-flex align-center justify-center" style="flex-grow: 1;">
           <v-toolbar-title>Collapsing Bar</v-toolbar-title>
         </div>
-        <v-btn @click="deleteMessage()" icon color="808080">
+        <v-btn @click="deletarAllMessages()" icon color="808080">
           <v-icon>mdi-delete</v-icon>
         </v-btn>
       </v-app-bar>
-      <div v-card v-for="(message, index) in messages" :key="index" :class="message.nome !== 'Eu' ? 'teal' : 'purple accent-4'" outlined class="ma-2">
-        <message-card :messageProp="message" />
-      </div>
+      <v-card v-for="(message, index) in messages" :key="index" :class="message.nome !== 'Eu' ? 'teal' : 'sea green'" outlined class="ma-2">
+        <message-card :messageProp="message" :editar="editmessage" @delete="deletarMessage" />
+      </v-card>
       <BottomBar @send-message="addMessage($event)" />
     </v-main>
     
@@ -33,20 +32,32 @@ export default {
     return {
       messages: [
         
-        {
-          nome: " Danilo",
-          text: "Olá"
-        },
-        {
-          nome: "Danilo",
-          text: "Tudo bem"
-        },
+      {
+          id: 1,
+          nome: "Pedro Henrique",
+          text: "Olá, entrei aqui pela primeira vez"
+        }
       ],
     }
   },
   methods:{
     addMessage(e){
-      this.messages.push(e)
+      const message = {
+          id: Math.random(),
+          nome: e.nome,
+          text: e.text     
+      }     
+      this.messages.push(message)
+    },
+    deletarAllMessages(){
+      this.messages = []
+    },
+    deletarMessage(id){
+      this.messages=this.messages.filter(message=> message.id !== id)
+    },
+    editmessage(id,novoTexto){
+      const message = this.messages.find((message) => message.id === id);
+      message.text = novoTexto
     }
   }
     }
