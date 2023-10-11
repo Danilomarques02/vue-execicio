@@ -1,6 +1,6 @@
 <template>
   <v-card
-    :class="messageProp.nome !== 'Eu' ? 'teal' : 'sea green'" outlined class="ma-3"
+    :class="CorDaMensagem"
   >
     <v-card-subtitle class="font-weight-bold">{{ messageProp.nome }}</v-card-subtitle>
     <v-card-text>
@@ -74,6 +74,13 @@ export default {
       novoTexto: ""
     }
   },
+  computed:{
+    CorDaMensagem(){
+      return this.messageProp.nome !== 'EU' ? 'teal':'sea green'
+    }
+  }
+
+  ,
   props: {
     messageProp: {
       type: Object,
@@ -82,13 +89,16 @@ export default {
     editar: Function
   },
   methods: {
-    editMessage() {
-      this.editar(this.messageProp.id, this.novoTexto)
-      this.dialog = false
-    },
-    deleteMessage(){
-      this.$emit("delete",this.messageProp.id)
+  editMessage() {
+    if (this.messageProp.id && this.novoTexto) {
+      this.editar(this.messageProp.id, this.novoTexto);
+      this.dialog = false;
     }
+  },
+  deleteMessage() {
+    this.$emit("delete", this.messageProp.id);
   }
+}
+
 };
 </script>
