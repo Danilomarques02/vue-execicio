@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <v-main>
+      <!--8-v-app-bar com botão para apagar todas as publicações-->
       <v-app-bar color="#005954">
         <v-icon>mdi-view-sequential</v-icon>
         <div class="d-flex align-center justify-center" style="flex-grow: 1;">
@@ -10,6 +11,7 @@
           <v-icon>mdi-delete</v-icon>
         </v-btn>
       </v-app-bar>
+      <!--1-Tela de linha do tempo da rede social (App.vue):-->
       <v-card v-for="(message, index) in messages" :key="index" :class="message.nome !== 'Eu' ? 'teal' : 'sea green'" outlined class="ma-2">
         <message-card :messageProp="message" :editar="editmessage" @delete="deletarMessage" />
       </v-card>

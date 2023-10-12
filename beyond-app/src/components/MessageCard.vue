@@ -7,6 +7,7 @@
       <div >{{ messageProp.text }}</div>
       <div class="d-flex justify-end">
  <template>
+  <!--3-Possibilidade de editar uma publicação-->
   <v-dialog
   v-model="dialog"
       persistent
@@ -58,6 +59,7 @@
       </v-card>
     </v-dialog>
 </template>
+<!--4-Possibilidade de remover uma publicação-->
       <v-btn @click="deleteMessage()" icon color="808080">
           <v-icon>mdi-delete</v-icon>
         </v-btn>
@@ -74,13 +76,13 @@ export default {
       novoTexto: ""
     }
   },
+  //5-Dados computados 
   computed:{
     CorDaMensagem(){
       return this.messageProp.nome !== 'EU' ? 'teal':'sea green'
     }
-  }
-
-  ,
+  },
+  //7- Utilização de props
   props: {
     messageProp: {
       type: Object,
