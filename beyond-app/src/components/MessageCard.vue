@@ -79,7 +79,7 @@ export default {
   //5-Dados computados 
   computed:{
     CorDaMensagem(){
-      return this.messageProp.nome !== 'EU' ? 'teal':'sea green'
+      return this.messageProp.nome !== 'EU' ? ' teal ' : ' sea green'
     }
   },
   //7- Utilização de props
