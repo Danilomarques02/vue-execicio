@@ -7,7 +7,6 @@
       <div >{{ messageProp.text }}</div>
       <div class="d-flex justify-end">
  <template>
-  <!--3-Possibilidade de editar uma publicação-->
   <v-dialog
   v-model="dialog"
       persistent
