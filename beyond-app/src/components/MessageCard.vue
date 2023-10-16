@@ -7,7 +7,6 @@
       <div >{{ messageProp.text }}</div>
       <div class="d-flex justify-end">
  <template>
-  <!--3-Possibilidade de editar uma publicação-->
   <v-dialog
   v-model="dialog"
       persistent
@@ -79,7 +78,7 @@ export default {
   //5-Dados computados 
   computed:{
     CorDaMensagem(){
-      return this.messageProp.nome !== 'EU' ? ' teal ' : ' sea green'
+      return this.messageProp.nome !== 'EU' ? 'teal':'sea green'
     }
   },
   //7- Utilização de props

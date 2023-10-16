@@ -1,27 +1,3 @@
 <template>
-  <v-app>
-   <router-view></router-view>
-    
-  </v-app>
-  
+   <router-view ></router-view>
 </template>
-
-<script>
-export default {
-  components:{
-   
-  },
-  data() {
-    return {
-      messages: [
-        
-   
-      ],
-    }
-  },
-  methods:{
- 
-      }     
-    }
-   
-</script>
