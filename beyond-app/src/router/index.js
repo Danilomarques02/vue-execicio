@@ -10,6 +10,7 @@ const routes = [
       path: "/chat/:nome",
       name: "chat",
       component: chat,
+  
     },
     {
         path: "/",

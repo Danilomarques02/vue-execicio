@@ -6,6 +6,7 @@
     <v-card-text>
       <div >{{ messageProp.text }}</div>
       <div class="d-flex justify-end">
+        
  <template>
   <v-dialog
   v-model="dialog"

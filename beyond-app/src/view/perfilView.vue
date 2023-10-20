@@ -64,7 +64,6 @@
     },
     methods: {
       startChat() {
-        // Adicione a lógica para iniciar um chat com este usuário
       },
     },
   };
