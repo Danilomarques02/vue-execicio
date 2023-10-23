@@ -45,19 +45,18 @@ export default {
           id: 1,
           nome: "Maria da Conceição",
           avatar: "https://img.elo7.com.br/product/zoom/2BD68CE/portrait-digital-em-um-estilo-fofinho-baby.jpg",
-          perfilPublico: false
         },
         {
           id: 2,
           nome: "Davi Felipe",
           avatar: "https://i.pinimg.com/736x/81/b6/12/81b612d54083f318996e04ab46c2a355.jpg",
-          perfilPublico: true
+
         },
         {
           id: 3,
           nome: "Wesley da Silva",
           avatar: "https://i.pinimg.com/1200x/03/a8/11/03a811b919bead0487c8458d18f388af.jpg",
-         perfilPublico: false
+
         },
       ],
       search: "",

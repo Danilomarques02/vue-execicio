@@ -1,12 +1,20 @@
 <template>
+  
   <v-card
     :class="CorDaMensagem"
   >
-    <v-card-subtitle class="font-weight-bold">{{ messageProp.nome }}</v-card-subtitle>
-    <v-card-text>
-      <div >{{ messageProp.text }}</div>
+  <div class="NomeAvatar">
+      <v-list-item-avatar>
+        <v-img :src="messageProp.avatar" contain class="avatar" ></v-img>
+      </v-list-item-avatar>
+      <v-card-subtitle class="font-weight-bold" >
+        {{ messageProp.nome }}</v-card-subtitle>
+    </div>
+
+      <v-card-text class="distancia">
+      <div>{{ messageProp.text }}</div>
       <div class="d-flex justify-end">
-        
+       
  <template>
   <v-dialog
   v-model="dialog"
@@ -69,6 +77,7 @@
 </template>
 
 <script>
+
 export default {
   data(){
     return{
@@ -86,7 +95,8 @@ export default {
   props: {
     messageProp: {
       type: Object,
-      required: true
+      required: true,
+      messagemProp: Object
     },
     editar: Function
   },
@@ -104,3 +114,19 @@ export default {
 
 };
 </script>
+<style>
+
+.font-weight-bold {
+    font-size: 20px;
+    color: rgb(64, 64, 64);
+    margin-left: -19px;
+
+  }
+  .NomeAvatar{
+    display: flex;
+    margin-left: 9px;
+
+
+  }
+
+</style>

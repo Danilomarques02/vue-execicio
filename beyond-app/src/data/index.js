@@ -8,7 +8,9 @@ export const usuarios = [
     senha: "********",
     sobre: "Olá, eu sou Maria. Adoro programar e aprender coisas novas 💻",
     avatar: "https://img.elo7.com.br/product/zoom/2BD68CE/portrait-digital-em-um-estilo-fofinho-baby.jpg",
-    mensagem: "Olá, sou Maria e entrei aqui pela primeira vez"
+    mensagem: "Olá, sou Maria e entrei aqui pela primeira vez",
+    text: "Ainda estou aprendendo a mexer, mais estou gostando"
+
   
   },
   {
@@ -20,7 +22,10 @@ export const usuarios = [
     senha: "********",
     sobre: "Olá, eu sou Davi Felipe. Gosto de aprender coisas novas e escutar musica 🎶",
     avatar: "https://i.pinimg.com/736x/81/b6/12/81b612d54083f318996e04ab46c2a355.jpg",
-    mensagem: "Olá, sou Davi Felipe e entrei aqui pela primeira vez"
+    mensagem: "Olá, sou Davi Felipe e entrei aqui pela primeira vez",
+    text: "Olá sou Davi, e aqui parece ser muito legal"
+
+
 
   
   },
@@ -33,7 +38,9 @@ export const usuarios = [
     senha: "********",
     sobre: "Olá, eu sou Wesley. Sou apaixonado por Artes 😍",
     avatar: "https://i.pinimg.com/1200x/03/a8/11/03a811b919bead0487c8458d18f388af.jpg",
-    mensagem: "Olá, sou Wesley e entrei aqui pela primeira vez"
+    mensagem: "Olá, sou Wesley e entrei aqui pela primeira vez",
+    text: "Olá sou Wesley, entrei aqui pela primeira vez"
+
 
   },
 ]
