@@ -5,9 +5,9 @@
   >
   <div class="NomeAvatar">
       <v-list-item-avatar>
-        <v-img :src="messageProp.avatar" contain class="avatar" ></v-img>
+        <v-img  :src="messageProp.avatar" contain class="avatar"  ></v-img>
       </v-list-item-avatar>
-      <v-card-subtitle class="font-weight-bold" >
+      <v-card-subtitle class="font-weight-bold" @click="$router.push(`/chat/${user.nome}`)">
         {{ messageProp.nome }}</v-card-subtitle>
     </div>
 
