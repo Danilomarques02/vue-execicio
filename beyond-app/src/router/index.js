@@ -3,6 +3,7 @@ import Vue from 'vue'
 import chat from '../view/chatView.vue'
 import todosUsuarios from '../view/todosUsuarios.vue'
 import perfil from '../view/perfilView.vue'
+import MessageList from '../view/MessageList.vue'
 Vue.use(VueRouter);
 
 const routes = [
@@ -21,7 +22,12 @@ const routes = [
         path: "/perfil/:nome",
         name: "perfil",
         component: perfil,
-    }
+    },
+    {
+      path: "/messageList",
+      name: "MessageList",
+      component: MessageList,
+  }
 
     
   ];
