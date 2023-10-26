@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { usuarios } from '../data/index'
+/*import { usuarios } from '../data/index'
 import MessageCard from '../components/MessageCard.vue'
 import BottomBar from '../components/BottomBar.vue'
 
@@ -90,5 +90,5 @@ export default {
       // Implemente a função de logout, se necessário
     }
   }
-};
+};*/
 </script>

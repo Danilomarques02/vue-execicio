@@ -1,7 +1,7 @@
 <template>
     <v-app>
       <v-app-bar app color="#009688">
-        <v-btn icon @click="$router.push(`/`)">
+        <v-btn icon @click="$router.push(`/todosUsuarios`)">
         <v-icon>mdi-arrow-left</v-icon>
         </v-btn>
         <v-toolbar-title>Perfil do Usuário</v-toolbar-title>

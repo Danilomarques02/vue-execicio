@@ -4,9 +4,22 @@ import chat from '../view/chatView.vue'
 import todosUsuarios from '../view/todosUsuarios.vue'
 import perfil from '../view/perfilView.vue'
 import MessageList from '../view/MessageList.vue'
+import novo from '../view/NovoCadastro.vue'
+import login from '../view/LoginForm.vue'
+
 Vue.use(VueRouter);
 
 const routes = [
+    {
+    path: "/",
+    name: "loginForm",
+    component: login,
+    },
+    {
+      path: "/cadastro",
+      name: "Novocadastro",
+      component: novo,
+      },
     {
       path: "/chat/:nome",
       name: "chat",
@@ -14,7 +27,7 @@ const routes = [
   
     },
     {
-        path: "/",
+        path: "/todosUsuarios",
         name: "todosUsuarios",
         component: todosUsuarios,
     },
@@ -28,7 +41,6 @@ const routes = [
       name: "MessageList",
       component: MessageList,
   }
-
     
   ];
   

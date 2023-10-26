@@ -50,13 +50,11 @@ export default {
           id: 2,
           nome: "Davi Felipe",
           avatar: "https://i.pinimg.com/736x/81/b6/12/81b612d54083f318996e04ab46c2a355.jpg",
-
         },
         {
           id: 3,
           nome: "Wesley da Silva",
           avatar: "https://i.pinimg.com/1200x/03/a8/11/03a811b919bead0487c8458d18f388af.jpg",
-
         },
       ],
       search: "",
@@ -71,6 +69,7 @@ export default {
   },
   methods: {
     searchUsers() {
+      // Implemente a lógica de pesquisa aqui
     },
   },
 };
@@ -89,8 +88,8 @@ export default {
 }
 
 .avatar {
-  width: 50px; 
-  height: 50px; 
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
 }
 </style>
