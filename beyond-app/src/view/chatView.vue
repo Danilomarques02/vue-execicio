@@ -33,7 +33,13 @@
             </v-list-item-icon>
             <v-list-item-title>Todos os Usuários</v-list-item-title>
           </v-list-item>
-          <v-list-item @click="logout">
+          <v-list-item @click="$router.push(`/messageList`)">
+            <v-list-item-icon>
+              <v-icon>mdi-message-text</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Feed</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="$router.push(`/`)">
             <v-list-item-icon>
               <v-icon>mdi-logout-variant</v-icon>
             </v-list-item-icon>

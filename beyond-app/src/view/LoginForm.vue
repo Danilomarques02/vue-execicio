@@ -4,22 +4,35 @@
       <v-container fill-height>
         <v-layout align-center justify-center>
           <v-flex xs12 sm8 md4>
-            <v-img src="../assets/logo.png" max-height="140px" contain></v-img>
+            <v-img src="../assets/logo.png" max-height="140px" contain />
 
-            <v-card-title class="text-h6">
-              Faça Login
-            </v-card-title>
+            <v-card-title class="text-h6">Faça Login</v-card-title>
             <v-card-text>
-              <v-form @submit.prevent="login">
-                <v-text-field v-model="email" label="Email" outlined class="rounded-input" block></v-text-field>
-                <v-text-field v-model="password" label="Senha" type="password" outlined class="rounded-input" block></v-text-field>
-                <router-link class="link" to="/cadastro">cadastre-se</router-link>
+              <v-form @submit.prevent="login" ref="loginForm">
+                <v-text-field
+                  v-model="user.email"
+                  label="Email"
+                  outlined
+                  class="rounded-input"
+                  block
+                />
+                <v-text-field
+                  v-model="user.password"
+                  type="password"
+                  label="Senha"
+                  outlined
+                  class="rounded-input"
+                  block
+                />
+                <router-link class="link" to="/cadastro" @click="cadastro">Cadastre-se</router-link>
                 <div class="forms">
-                  <v-btn rounded dark color="#52BA7D" block @click="login">Login</v-btn>
-                  <div class="icon-links">
-                    <v-icon @click="loginWithGoogle">mdi-google</v-icon>
-                    <v-icon @click="loginWithEmail">mdi-email</v-icon>
-                  </div>
+                <v-btn type="submit" rounded dark color="#52BA7D" block @click="login" >Login</v-btn>
+              </div>
+
+
+                <div class="icon-links">
+                  <v-icon>mdi-google</v-icon>
+                  <v-icon>mdi-email</v-icon>
                 </div>
               </v-form>
             </v-card-text>
@@ -31,29 +44,20 @@
 </template>
 
 <script>
+import router from "../router/index";
+
 export default {
   data() {
     return {
-      email: '',
-      password: '',
+      user: {},
     };
   },
   methods: {
     login() {
-      // Implemente a lógica de autenticação aqui
-      if (this.email && this.password) {
-        // Autenticação bem-sucedida, você pode redirecionar o usuário para a página principal
-        this.$router.push('/dashboard');
-      } else {
-        // Tratamento de erro ou exibição de mensagem
-        console.error('Falha na autenticação');
-      }
+      this.$store.dispatch("login", this.user);
     },
-    loginWithGoogle() {
-      // Implemente a lógica de login com o Google aqui
-    },
-    loginWithEmail() {
-      // Implemente a lógica de login com email aqui
+    cadastro() {
+      router.push({ name: "cadastro" });
     },
   },
 };
@@ -80,11 +84,7 @@ export default {
   margin-top: 10px;
 }
 
-.rounded-input::after {
-  border-color: #009688;
-}
-
 .link {
   color: black;
 }
-</style>
+</style>*/
