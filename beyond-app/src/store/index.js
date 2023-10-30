@@ -1,12 +1,14 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import router from '@/router'
-import { auth } from '@/config/firebase'
+import Vue from 'vue';
+import Vuex from 'vuex';
+import router from '@/router';
+import { auth } from '@/config/firebase';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-} from 'firebase/auth'
+  signInWithPopup, 
+  GoogleAuthProvider, 
+} from 'firebase/auth';
 
 Vue.use(Vuex)
 
@@ -32,14 +34,14 @@ export default new Vuex.Store({
         switch (error.code) {
           case 'auth/user-not-found':
             alert('Usuário não encontrado')
-            break
+            break;
           case 'auth/wrong-password':
             alert('Senha incorreta')
-            break
+            break;
           default:
             alert('Algo deu errado')
         }
-        return
+        return;
       }
 
       commit('SET_USER', auth.currentUser)
@@ -55,20 +57,20 @@ export default new Vuex.Store({
         switch (error.code) {
           case 'auth/email-already-in-use':
             alert('Email já em uso')
-            break
+            break;
           case 'auth/invalid-email':
             alert('Email inválido')
-            break
+            break;
           case 'auth/operation-not-allowed':
             alert('Operação não permitida')
-            break
+            break;
           case 'auth/weak-password':
             alert('Senha fraca')
-            break
+            break;
           default:
             alert('Algo deu errado')
         }
-        return
+        return;
       }
 
       commit('SET_USER', auth.currentUser)
@@ -80,7 +82,7 @@ export default new Vuex.Store({
 
       commit('CLEAR_USER')
 
-      router.push('/login')
+      router.push('/')
     },
     async fetchUser({ commit }) {
       auth.onAuthStateChanged(async (user) => {
@@ -89,11 +91,20 @@ export default new Vuex.Store({
         } else {
           commit('SET_USER', user)
 
-          if (router.currentRoute.path === '/login') {
+          if (router.currentRoute.path === '/') {
             router.push('/messageList')
           }
         }
       })
     },
+    async loginGoogle() {
+      try {
+        const provider = new GoogleAuthProvider(); 
+        await signInWithPopup(auth, provider);
+      } catch (error) {
+        console.log(error.message);
+        return;
+      }
+    },
   },
-})
+});

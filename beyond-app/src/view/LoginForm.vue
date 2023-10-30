@@ -24,15 +24,12 @@
                   class="rounded-input"
                   block
                 />
-                <router-link class="link" to="/cadastro" @click="cadastro">Cadastre-se</router-link>
+                <router-link class="link" to="/cadastro">Cadastre-se</router-link>
                 <div class="forms">
-                <v-btn type="submit" rounded dark color="#52BA7D" block @click="login" >Login</v-btn>
-              </div>
-
-
+                  <v-btn rounded dark color="#52BA7D" block type="submit">Login</v-btn>
+                </div>
                 <div class="icon-links">
-                  <v-icon>mdi-google</v-icon>
-                  <v-icon>mdi-email</v-icon>
+                  <v-icon @click="loginGoogle" >mdi-google</v-icon>
                 </div>
               </v-form>
             </v-card-text>
@@ -42,6 +39,7 @@
     </v-main>
   </v-app>
 </template>
+
 
 <script>
 import router from "../router/index";
@@ -58,6 +56,13 @@ export default {
     },
     cadastro() {
       router.push({ name: "cadastro" });
+    },
+    loginGoogle() {
+      this.$store.dispatch('loginGoogle').then(() => {
+        router.push('/messageList');
+      }).catch((error) => {
+        console.error(error);
+      });
     },
   },
 };

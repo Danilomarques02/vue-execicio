@@ -6,7 +6,7 @@
           <v-flex xs12 sm8 md4>
             <v-img src="@/assets/logo.png" max-height="140px" contain></v-img>
 
-            <v-card-title class="text-h6">Faça Login</v-card-title>
+            <v-card-title class="text-h6">Faça o seu cadastro</v-card-title>
             <v-card-text>
               <v-form @submit.prevent="cadastrar">
                 <v-row>
@@ -37,8 +37,7 @@
                 <v-row>
                   <v-col cols="12">
                     <v-layout align-center justify-center>
-                      <v-icon>mdi-google</v-icon>
-                      <v-icon>mdi-email</v-icon>
+                      <v-icon @click="loginGoogle" >mdi-google</v-icon>
                     </v-layout>
                   </v-col>
                 </v-row>
@@ -84,6 +83,13 @@ export default {
       if (!this.emailError && !this.passwordError) {
         this.$store.dispatch("register", this.user);
       }
+    },
+    loginGoogle() {
+      this.$store.dispatch('loginGoogle').then(() => {
+        router.push('/messageList');
+      }).catch((error) => {
+        console.error(error);
+      });
     },
   },
 };

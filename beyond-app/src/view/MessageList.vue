@@ -57,7 +57,6 @@ export default {
   data() {
     const allMessages = [];
 
-    // Adicione as mensagens dos usuários à lista de mensagens
     usuarios.forEach((user) => {
       if (Array.isArray(user.messages)) {
         allMessages.push(...user.messages);
@@ -69,18 +68,21 @@ export default {
         {
           id: 1,
           nome: "Maria da Conceição",
+          user: "Maria",
           text: "Ainda estou aprendendo a mexer, mais estou gostando",
           avatar: "https://img.elo7.com.br/product/zoom/2BD68CE/portrait-digital-em-um-estilo-fofinho-baby.jpg",
         },
         {
           id: 2,
           nome: "Davi Felipe",
+          user: "Davi",
           text: "Olá sou Davi, e aqui parece ser muito legal",
           avatar: "https://i.pinimg.com/736x/81/b6/12/81b612d54083f318996e04ab46c2a355.jpg",
         },
         {
           id: 3,
           nome: "Wesley da Silva",
+          user: "Wesley",
           text: "Olá sou Wesley, entrei aqui pela primeira vez",
           avatar: "https://i.pinimg.com/1200x/03/a8/11/03a811b919bead0487c8458d18f388af.jpg",
         }

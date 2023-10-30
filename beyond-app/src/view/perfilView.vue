@@ -26,7 +26,7 @@
                 <v-divider></v-divider>
                 <v-card-actions>
                   <v-btn color="#009688">Seguir</v-btn>
-                  <v-btn @click="$router.push(`/chat/${user.nome}`)" color="#009688">Chat</v-btn>
+                  <v-btn @click="$router.push(`/chat/${user.nome}`)" color="#009688">Publicações</v-btn>
                 </v-card-actions>
               </v-card>
             </v-col>

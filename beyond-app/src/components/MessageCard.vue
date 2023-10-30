@@ -7,8 +7,12 @@
       <v-list-item-avatar>
         <v-img  :src="messageProp.avatar" contain class="avatar"  ></v-img>
       </v-list-item-avatar>
+      <div class="nome">
       <v-card-subtitle class="font-weight-bold" @click="$router.push(`/chat/${user.nome}`)">
         {{ messageProp.nome }}</v-card-subtitle>
+        <v-card-subtitle class="font-weight-bold" @click="$router.push(`/chat/${user.nome}`)">
+        {{ messageProp.user }}</v-card-subtitle>
+      </div>
     </div>
 
       <v-card-text class="distancia">
@@ -127,6 +131,11 @@ export default {
     margin-left: 9px;
 
 
+  }
+  .nome{
+    display: flex;
+    flex-direction: column;
+    
   }
 
 </style>
