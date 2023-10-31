@@ -5,6 +5,9 @@
         <v-container>
           <v-row>
             <v-col cols="12">
+              <v-btn icon @click="$router.push(`/messageList`)">
+        <v-icon>mdi-arrow-left</v-icon>
+        </v-btn>
               <v-text-field
                 v-model="search"
                 label="Pesquisar Usuários"
@@ -14,8 +17,11 @@
               ></v-text-field>
             </v-col>
           </v-row>
+         
           <div class="user-list">
+        
             <v-list>
+        
               <v-list-item
                 v-for="usuario in filteredUsuarios"
                 :key="usuario.id"

@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import login from '../view/LoginForm.vue';
 import { auth } from '@/config/firebase';
 
+
 Vue.use(VueRouter);
 
 const routes = [
@@ -33,7 +34,7 @@ const routes = [
     },
   },
   {
-    path: '/perfil/:nome',
+    path: '/perfil/:nome/:user',
     name: 'perfil',
     component: () => import('../view/perfilView.vue'),
     meta: {
@@ -48,20 +49,18 @@ const routes = [
       requiresAuth: true,
     },
   },
+
 ];
 
 const router = new VueRouter({
-  mode: 'hash', // Use hash mode
+  mode: 'hash', 
   routes,
 });
-
-router.beforeEach((to, from, next) => {
-  if (to.matched.some((record) => record.meta.requiresAuth) && !auth.currentUser) {
-    next("/");
-  } else if (to.path === "/login" && auth.currentUser && from.path !== '/') {
-    next("/");
-  } else {
-    next();
+auth.onAuthStateChanged((user)=>{
+  if(user){
+    router.replace({name: 'MessageList'});
+  }else{
+     router.replace({ name: 'loginForm'});
   }
 });
 

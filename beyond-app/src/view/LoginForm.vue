@@ -47,12 +47,22 @@ import router from "../router/index";
 export default {
   data() {
     return {
-      user: {},
+      user: {
+        email: '',
+        password: ''
+      },
     };
   },
   methods: {
     login() {
-      this.$store.dispatch("login", this.user);
+      this.$store.dispatch("login", this.user)
+        .then(() => {
+          this.$store.dispatch("fetchUser");
+          router.push({ name: 'MessageList' });
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     },
     cadastro() {
       router.push({ name: "cadastro" });
@@ -64,8 +74,8 @@ export default {
         console.error(error);
       });
     },
-  },
-};
+  }
+}
 </script>
 
 <style scoped>
@@ -92,4 +102,4 @@ export default {
 .link {
   color: black;
 }
-</style>*/
+</style>

@@ -19,7 +19,8 @@ export default {
   methods: {
     sendMessage() {
       const message = {
-        nome: 'Eu',
+        nome: localStorage.getItem('nome'),
+        user: localStorage.getItem('email'),
         text: this.textInput,
       };
       this.$emit('send-message', message);

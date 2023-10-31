@@ -8,15 +8,15 @@
         <v-img  :src="messageProp.avatar" contain class="avatar"  ></v-img>
       </v-list-item-avatar>
       <div class="nome">
-      <v-card-subtitle class="font-weight-bold" @click="$router.push(`/chat/${user.nome}`)">
-        {{ messageProp.nome }}</v-card-subtitle>
-        <v-card-subtitle class="font-weight-bold" @click="$router.push(`/chat/${user.nome}`)">
-        {{ messageProp.user }}</v-card-subtitle>
+        <v-card-subtitle class="font-weight-bold" >
+          <router-link :to="'/perfil/' + messageProp.nome + '/' + messageProp.user">{{ messageProp.nome }}</router-link></v-card-subtitle>
+        <v-card-subtitle class="user" >
+          <router-link :to="'/perfil/' + messageProp.nome + '/' + messageProp.user">{{ ('@'+ messageProp.user) }}</router-link></v-card-subtitle>
       </div>
     </div>
-
+    
       <v-card-text class="distancia">
-      <div>{{ messageProp.text }}</div>
+      <div> {{ messageProp.text }}</div>
       <div class="d-flex justify-end">
        
  <template>
@@ -122,7 +122,6 @@ export default {
 
 .font-weight-bold {
     font-size: 20px;
-    color: rgb(64, 64, 64);
     margin-left: -19px;
 
   }
@@ -136,6 +135,10 @@ export default {
     display: flex;
     flex-direction: column;
     
+  }
+  .user{
+    margin-top: -2rem;
+    margin-left: -0.8rem;
   }
 
 </style>

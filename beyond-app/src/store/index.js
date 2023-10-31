@@ -6,11 +6,12 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  signInWithPopup, 
-  GoogleAuthProvider, 
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
 } from 'firebase/auth';
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
@@ -18,92 +19,103 @@ export default new Vuex.Store({
   },
   mutations: {
     SET_USER(state, user) {
-      state.user = user
+      state.user = user;
     },
     CLEAR_USER(state) {
-      state.user = null
+      state.user = null;
     },
   },
   actions: {
     async login({ commit }, details) {
-      const { email, password } = details
+      const { email, password } = details;
 
       try {
-        await signInWithEmailAndPassword(auth, email, password)
+        await signInWithEmailAndPassword(auth, email, password);
       } catch (error) {
         switch (error.code) {
           case 'auth/user-not-found':
-            alert('Usuário não encontrado')
+            alert('Usuário não encontrado');
             break;
           case 'auth/wrong-password':
-            alert('Senha incorreta')
+            alert('Senha incorreta');
             break;
           default:
-            alert('Algo deu errado')
+            alert('Algo deu errado');
         }
         return;
       }
 
-      commit('SET_USER', auth.currentUser)
+      commit('SET_USER', auth.currentUser);
 
-      router.push('/messageList')
+      router.push('/messageList');
     },
     async register({ commit }, details) {
-      const { email, password } = details
+      const { email, password } = details;
 
       try {
-        await createUserWithEmailAndPassword(auth, email, password)
+        await createUserWithEmailAndPassword(auth, email, password);
       } catch (error) {
         switch (error.code) {
           case 'auth/email-already-in-use':
-            alert('Email já em uso')
+            alert('Email já em uso');
             break;
           case 'auth/invalid-email':
-            alert('Email inválido')
+            alert('Email inválido');
             break;
           case 'auth/operation-not-allowed':
-            alert('Operação não permitida')
+            alert('Operação não permitida');
             break;
           case 'auth/weak-password':
-            alert('Senha fraca')
+            alert('Senha fraca');
             break;
           default:
-            alert('Algo deu errado')
+            alert('Algo deu errado');
         }
         return;
       }
 
-      commit('SET_USER', auth.currentUser)
+      commit('SET_USER', auth.currentUser);
 
-      router.push('/messageList')
+      router.push('/messageList');
     },
     async logout({ commit }) {
-      await signOut(auth)
+      await signOut(auth);
 
-      commit('CLEAR_USER')
+      commit('CLEAR_USER');
 
-      router.push('/')
+      router.push('/');
     },
     async fetchUser({ commit }) {
-      auth.onAuthStateChanged(async (user) => {
-        if (user === null) {
-          commit('CLEAR_USER')
-        } else {
-          commit('SET_USER', user)
-
-          if (router.currentRoute.path === '/') {
-            router.push('/messageList')
-          }
+      const user = auth.currentUser; // Obter o usuário atual
+    
+      if (user) {
+        commit('SET_USER', user);
+    
+        if (router.currentRoute.path === '/') {
+          router.push('/messageList');
         }
-      })
+      }
     },
     async loginGoogle() {
+      const provider = new GoogleAuthProvider();
+
       try {
-        const provider = new GoogleAuthProvider(); 
-        await signInWithPopup(auth, provider);
+        const authInstance = getAuth();
+        const result = await signInWithPopup(authInstance, provider);
+
+        // Obtenha os detalhes do usuário a partir do objeto 'result'
+        const displayName = result.user.displayName;
+        const photoURL = result.user.photoURL;
+        const email = result.user.email;
+        const user = result.user.email;
+
+        localStorage.setItem('nome', displayName);
+        localStorage.setItem('photoURL', photoURL);
+        localStorage.setItem('email', email);
+        localStorage.setItem('user', ('@' + user.slice(0, user.indexOf('@'))));
+        router.push('/messageList');
       } catch (error) {
         console.log(error.message);
-        return;
       }
     },
   },
