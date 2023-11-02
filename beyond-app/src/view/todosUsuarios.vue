@@ -6,8 +6,8 @@
           <v-row>
             <v-col cols="12">
               <v-btn icon @click="$router.push(`/messageList`)">
-        <v-icon>mdi-arrow-left</v-icon>
-        </v-btn>
+                <v-icon>mdi-arrow-left</v-icon>
+              </v-btn>
               <v-text-field
                 v-model="search"
                 label="Pesquisar Usuários"
@@ -17,15 +17,13 @@
               ></v-text-field>
             </v-col>
           </v-row>
-         
+
           <div class="user-list">
-        
             <v-list>
-        
               <v-list-item
                 v-for="usuario in filteredUsuarios"
                 :key="usuario.id"
-                :to="`/perfil/${usuario.nome}`"
+                :to="`/perfil/${usuario.nome}/${usuario.id}`"
               >
                 <v-list-item-avatar>
                   <v-img :src="usuario.avatar" contain class="avatar"></v-img>
@@ -46,6 +44,7 @@
 export default {
   data() {
     return {
+      user: {},
       usuarios: [
         {
           id: 1,
@@ -72,10 +71,29 @@ export default {
         usuario.nome.toLowerCase().includes(this.search.toLowerCase())
       );
     },
+    userDisplayNome() {
+      return localStorage.getItem('nome');
+    },
+    userDisplayUser() {
+      const user = localStorage.getItem('user');
+      return user || '';
+    },
+    userDisplayPhoto() {
+      const image = localStorage.getItem('photoURL');
+      const defaultImage = 'https://png.pngtree.com/thumb_back/fh260/background/20220813/pngtree-rounded-raster-icon-with-cobalt-and-gray-color-scheme-for-user-profile-photo-image_19491244.jpg';
+      return image || defaultImage;
+    },
+  },
+  created() {
+    const newUser = {
+      id: Math.random(),
+      nome: this.userDisplayNome,
+      avatar: this.userDisplayPhoto,
+    };
+    this.usuarios.push(newUser);
   },
   methods: {
     searchUsers() {
-      // Implemente a lógica de pesquisa aqui
     },
   },
 };

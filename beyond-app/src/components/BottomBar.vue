@@ -1,6 +1,5 @@
 <template>
   <v-app-bar app fixed bottom color="#424242">
-      <!--2-Possibilidade de criar uma nova publicação-->
     <v-text-field v-model="textInput" @keyup.enter="sendMessage" solo hide-details label="Enviar mensagem..."></v-text-field>
     <v-btn @click="sendMessage" icon color="blue">
       <v-icon>mdi-send</v-icon>
@@ -10,6 +9,7 @@
 </template>
 
 <script>
+
 export default {
   data() {
     return {

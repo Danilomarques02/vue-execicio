@@ -86,7 +86,7 @@ export default new Vuex.Store({
       router.push('/');
     },
     async fetchUser({ commit }) {
-      const user = auth.currentUser; // Obter o usuário atual
+      const user = auth.currentUser; 
     
       if (user) {
         commit('SET_USER', user);
@@ -103,7 +103,6 @@ export default new Vuex.Store({
         const authInstance = getAuth();
         const result = await signInWithPopup(authInstance, provider);
 
-        // Obtenha os detalhes do usuário a partir do objeto 'result'
         const displayName = result.user.displayName;
         const photoURL = result.user.photoURL;
         const email = result.user.email;

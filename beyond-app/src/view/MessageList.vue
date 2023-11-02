@@ -128,7 +128,7 @@ export default {
         nome: localStorage.getItem('nome'),
         user: localStorage.getItem('user'),
         text: e.text,
-        avatar: this.userAvatar, // Adicione a imagem de perfil do usuário logado
+        avatar: this.userAvatar, 
       };
       this.messages.push(message);
     },

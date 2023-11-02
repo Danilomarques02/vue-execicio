@@ -20,9 +20,9 @@
               ></v-img>
               <v-divider></v-divider>
               <v-card-text class="user-details">
-                <h2 class="user-name">{{ user && user.nome ? user.nome : 'N/A' }}</h2>
-                <p class="user-email">{{ user && user.email ? user.email : 'N/A' }}</p>
-                <p class="user-phone">{{ user && user.phone ? user.phone : 'N/A' }}</p>
+                <h2 class="user-name">{{ user && user.nome }}</h2>
+                <p class="user-email">{{ user && user.email }}</p>
+                <p class="user-phone">{{ user && user.phone  }}</p>
               </v-card-text>
               <v-divider></v-divider>
               <v-card-actions>
@@ -34,12 +34,12 @@
           <v-col cols="12" md="8">
             <v-card class="pa-4">
               <h3 class="section-title">Sobre Mim</h3>
-              <p class="user-about">{{ user && user.sobre ? user.sobre : 'N/A' }}</p>
+              <p class="user-about">{{ user && user.sobre}}</p>
               <v-divider></v-divider>
               <h3 class="section-title">Informações de Conta</h3>
-              <p><strong>Email:</strong> <span class="user-info">{{ user && user.email ? user.email : 'N/A' }}</span></p>
-              <p><strong>Telefone:</strong> <span class="user-info">{{ user && user.telefone ? user.telefone : 'N/A' }}</span></p>
-              <p><strong>Login:</strong> <span class="user-info">{{ user && user.login ? user.login : 'N/A' }}</span></p>
+              <p><strong>Email:</strong> <span class="user-info">{{ user && user.email}}</span></p>
+              <p><strong>Telefone:</strong> <span class="user-info">{{ user && user.telefone}}</span></p>
+              <p><strong>Login:</strong> <span class="user-info">{{ user && user.login }}</span></p>
               <p><strong>Senha:</strong> <span class="user-info">********</span></p>
             </v-card>
           </v-col>
@@ -95,7 +95,6 @@ export default {
       text: "",
     };
 
-    // Adicione o novo usuário diretamente ao array 'usuarios' e torne a alteração reativa
     Vue.set(usuarios, usuarios.length, newUsuario);
   },
 };

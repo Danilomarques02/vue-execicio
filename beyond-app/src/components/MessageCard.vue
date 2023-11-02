@@ -71,7 +71,6 @@
       </v-card>
     </v-dialog>
 </template>
-<!--4-Possibilidade de remover uma publicação-->
       <v-btn @click="deleteMessage()" icon color="808080">
           <v-icon>mdi-delete</v-icon>
         </v-btn>
@@ -89,7 +88,6 @@ export default {
       novoTexto: ""
     }
   },
-  //5-Dados computados 
   computed:{
     CorDaMensagem(){
       return this.messageProp.nome !== 'EU' ? 'teal':'sea green'

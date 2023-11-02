@@ -9,9 +9,9 @@
             <v-card-text>
               <v-form @submit.prevent="cadastrar">
                 <v-row>
-                <v-col cols="6">
+                  <v-col cols="6">
                     <v-text-field v-model="user.nome" label="Nome" outlined class="rounded-input" block :rules="rules.nome"></v-text-field>
-                    <v-text-field v-model="user.usuario" label="usuario"  outlined class="rounded-input" block :rules="rules.user"></v-text-field>
+                    <v-text-field v-model="user.usuario" label="Usuário" outlined class="rounded-input" block :rules="rules.user"></v-text-field>
                     <v-text-field v-model="user.email" label="Email" outlined class="rounded-input" block :rules="rules.email"></v-text-field>
                   </v-col>
                   <v-col cols="6">
@@ -37,7 +37,7 @@
                 <v-row>
                   <v-col cols="12">
                     <v-layout align-center justify-center>
-                      <v-icon @click="loginGoogle" >mdi-google</v-icon>
+                      <v-icon @click="loginGoogle">mdi-google</v-icon>
                     </v-layout>
                   </v-col>
                 </v-row>
@@ -51,6 +51,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'; 
 import router from '../router/index';
 
 export default {
@@ -67,25 +68,20 @@ export default {
     };
   },
   methods: {
+    ...mapActions(['loginGoogle']), 
     Image(event) {
+  if (event.target && event.target.files && event.target.files.length > 0) {
     const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64Image = e.target.result;
+      localStorage.setItem('userImage', base64Image);
+      this.user.profileImage = base64Image;
+    };
+    reader.readAsDataURL(file);
+  }
+},
 
-    if (file) {
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        const base64Image = e.target.result;
-
-        // Armazene a imagem no Local Storage
-        localStorage.setItem('userImage', base64Image);
-
-        // Atribua a imagem à propriedade profileImage do perfil
-        this.user.profileImage = base64Image;
-      };
-
-      reader.readAsDataURL(file);
-    }
-  },
 
     voltar() {
       router.push({ name: 'login' });
@@ -93,9 +89,9 @@ export default {
     cadastrar() {
       localStorage.setItem("email", this.user.email);
       localStorage.setItem("nome", this.user.nome);
-      localStorage.setItem("userlocal", ('@'+this.user.usuario));
-      localStorage.setItem("telefone",this.user.telefone) ;
-     
+      localStorage.setItem("userlocal", ('@' + this.user.usuario));
+      localStorage.setItem("telefone", this.user.telefone);
+
       this.emailError = this.rules.email
         .map(rule => rule(this.user.email))
         .filter(error => error)
@@ -112,7 +108,6 @@ export default {
     loginGoogle() {
       this.$store.dispatch('loginGoogle').then(() => {
         router.push('/messageList');
-       
       }).catch((error) => {
         console.error(error);
       });
@@ -120,6 +115,7 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 .green-background {
   background-color: #009688;
