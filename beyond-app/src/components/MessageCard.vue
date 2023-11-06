@@ -9,9 +9,9 @@
       </v-list-item-avatar>
       <div class="nome">
         <v-card-subtitle class="font-weight-bold" >
-          <router-link :to="'/perfil/' + messageProp.nome + '/' + messageProp.user">{{ messageProp.nome }}</router-link></v-card-subtitle>
-        <v-card-subtitle class="user" >
-          <router-link :to="'/perfil/' + messageProp.nome + '/' + messageProp.user">{{ ('@'+ messageProp.user) }}</router-link></v-card-subtitle>
+          <router-link style="color: #013d3b; text-decoration: none;" :to="'/perfil/' + messageProp.nome + '/' + messageProp.user">{{ messageProp.nome }}</router-link></v-card-subtitle>
+          <v-card-subtitle class="user" >
+          <router-link style="color: #013d3b; " :to="'/perfil/' + messageProp.nome + '/' + messageProp.user">{{ ('@'+ messageProp.user) }}</router-link></v-card-subtitle>
       </div>
     </div>
     
@@ -93,7 +93,6 @@ export default {
       return this.messageProp.nome !== 'EU' ? 'teal':'sea green'
     }
   },
-  //7- Utilização de props
   props: {
     messageProp: {
       type: Object,
@@ -121,22 +120,19 @@ export default {
 .font-weight-bold {
     font-size: 20px;
     margin-left: -19px;
-
   }
   .NomeAvatar{
     display: flex;
     margin-left: 9px;
-
-
   }
   .nome{
     display: flex;
     flex-direction: column;
-    
   }
   .user{
     margin-top: -2rem;
     margin-left: -0.8rem;
+  
   }
 
 </style>
