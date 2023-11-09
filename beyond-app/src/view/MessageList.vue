@@ -17,14 +17,10 @@
         <v-icon>mdi-delete</v-icon>
       </v-btn>
     </v-app-bar>
-
-    <!-- Conteúdo da página -->
-    <v-card v-for="(message, index) in messages" :key="index" :class="message.nome !== 'Eu' ? 'teal' : 'sea green'" outlined class="ma-2">
-      <message-card :messageProp="message" :avatar="userAvatar" :editar="editmessage" @delete="deletarMessage" />
-    </v-card>
+       <v-card v-for="(message, index) in messages" :key="index" :class="message.nome !== 'Eu' ? 'teal' : 'sea green'" outlined class="ma-2">
+       <message-card :messageProp="message" :editar="editmessage" @delete="deletarMessage" />
+       </v-card>
     <BottomBar @send-message="addMessage($event)" />
-
-    <!-- Menu de ícone de três linhas -->
     <v-navigation-drawer v-model="menu" app>
       <v-list>
         <v-list-item>

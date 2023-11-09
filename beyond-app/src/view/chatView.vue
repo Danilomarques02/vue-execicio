@@ -13,7 +13,7 @@
       <v-card v-for="(message, index) in messages" :key="index" :class="message.nome !== 'Eu' ? 'teal' : 'sea green'" outlined class="ma-2">
         <message-card :messageProp="message" :editar="editmessage" @delete="deletarMessage" />
       </v-card>
-      <BottomBar @send-message="addMessage($event, user.avatar)" />
+      <BottomBar @send-message="addMessage($event)" />
       <v-navigation-drawer v-model="menu" app>
         <v-list>
           <v-list-item @click="$router.push(`/perfil/${user.nome}/${user}`)">
@@ -47,9 +47,11 @@
 </template>
 
 <script>
-import { usuarios } from '../data/index'
-import MessageCard from '../components/MessageCard.vue'
-import BottomBar from '../components/BottomBar.vue'
+import { usuarios } from '../data/index';
+import MessageCard from '../components/MessageCard.vue';
+import BottomBar from '../components/BottomBar.vue';
+import { collection, addDoc } from "firebase/firestore";
+import { db } from '../config/firebase';
 
 export default {
   components: {
@@ -73,30 +75,39 @@ export default {
     };
   },
   methods: {
-    addMessage(e, avatar) {
-      const message = {
-        id: Math.random(),
-        nome: e.nome,
-        text: e.text,
-        avatar: avatar,
-      }
-      this.messages.push(message)
-    },
-    deletarAllMessages() {
-      this.messages = []
+    async addMessage(e) {
+  const message = {
+    remetente: this.user.nome,
+    nome: e.nome,
+    text: e.text,
+    avatar: this.user.avatar, 
+  };
+
+  try {
+    const docRef = await addDoc(collection(db, 'messages'), message);
+    console.log('Document written with ID: ', docRef.id);
+  } catch (error) {
+    console.error('Error adding document: ', error);
+  }
+  this.messages.push(message);
+},
+
+    async deletarAllMessages() {
+
+
+      this.messages = [];
     },
     deletarMessage(id) {
-      this.messages = this.messages.filter(message => message.id !== id)
+      this.messages = this.messages.filter(message => message.id !== id);
     },
     editmessage(id, novoTexto) {
-      const message = this.messages.find(message => message.id === id)
-      message.text = novoTexto
+      const message = this.messages.find(message => message.id === id);
+      message.text = novoTexto;
     },
     toggleMenu() {
-      this.menu = !this.menu
+      this.menu = !this.menu;
     },
-    logout() {
-    }
-  }
-}
+    
+  },
+};
 </script>
