@@ -50,7 +50,7 @@
 import { usuarios } from '../data/index';
 import MessageCard from '../components/MessageCard.vue';
 import BottomBar from '../components/BottomBar.vue';
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, doc, updateDoc, deleteDoc,query, where, getDocs } from "firebase/firestore";
 import { db } from '../config/firebase';
 
 export default {
@@ -59,55 +59,98 @@ export default {
     BottomBar
   },
   data() {
-    const usuario = usuarios.find(user => user.nome === this.$route.params.nome);
-
     return {
-      messages: [
-        {
-          id: 1,
-          nome: usuario.nome,
-          text: usuario.text,
-          avatar: usuario.avatar
-        }
-      ],
+      messages: [],
       menu: false,
-      user: usuario,
+      user: null,
     };
+  },
+  created() {
+    const usuario = usuarios.find(user => user.nome === this.$route.params.nome);
+    if (usuario) {
+      this.user = usuario;
+      this.messages.push({
+        id: 1,
+        nome: usuario.nome,
+        text: usuario.text,
+        avatar: usuario.avatar
+      });
+    }
   },
   methods: {
     async addMessage(e) {
-  const message = {
-    remetente: this.user.nome,
-    nome: e.nome,
-    text: e.text,
-    avatar: this.user.avatar, 
-  };
-
-  try {
-    const docRef = await addDoc(collection(db, 'messages'), message);
-    console.log('Document written with ID: ', docRef.id);
-  } catch (error) {
-    console.error('Error adding document: ', error);
-  }
-  this.messages.push(message);
-},
+      if (this.user) {
+        const message = {
+          id: Math.random(),
+          remetente: this.user.nome,
+          nome: e.nome,
+          text: e.text,
+          avatar: this.user.avatar,
+        };
+        try {
+          const docRef = await addDoc(collection(db, 'messages'), message);
+          console.log('Document written with ID: ', docRef.id);
+          message.id = docRef.id;
+        } catch (error) {
+          console.error('Error adding document: ', error);
+        }
+        this.messages.push(message);
+      }
+    },
 
     async deletarAllMessages() {
+  try {
+    const q = query(collection(db, 'messages'), where('remetente', '==', this.user.nome));
+    const querySnapshot = await getDocs(q);
+    const messageIds = querySnapshot.docs.map(doc => doc.id);
+    await Promise.all(messageIds.map(async (id) => {
+      const messageRef = doc(db, 'messages', id);
+      await deleteDoc(messageRef);
+    }));
+    this.messages = [];
+    console.log('Todas as mensagens do usuário foram deletadas com sucesso');
+  } catch (error) {
+    console.error('Erro ao deletar as mensagens do usuário:', error);
+  }
+},
 
-
-      this.messages = [];
+    async deletarMessage(id) {
+      try {
+        const messageIndex = this.messages.findIndex(message => message.id === id);
+        if (messageIndex !== -1) {
+          this.messages.splice(messageIndex, 1); 
+          const messageRef = doc(db, 'messages', id);
+          await deleteDoc(messageRef);
+          console.log('Documento deletado com sucesso');
+        } else {
+          console.error('Mensagem não encontrada localmente:', id);
+        }
+      } catch (error) {
+        console.error('Erro ao deletar o documento:', error);
+      }
     },
-    deletarMessage(id) {
-      this.messages = this.messages.filter(message => message.id !== id);
-    },
-    editmessage(id, novoTexto) {
-      const message = this.messages.find(message => message.id === id);
-      message.text = novoTexto;
+    
+    async editmessage(id, novoTexto) {
+      try {
+        const messageIndex = this.messages.findIndex(message => message.id === id);
+        if (messageIndex !== -1) {
+          this.$set(this.messages, messageIndex, { ...this.messages[messageIndex], text: novoTexto });
+          const messageRef = doc(db, 'messages', id);
+          await updateDoc(messageRef, {
+            text: novoTexto
+          });
+          this.$forceUpdate();
+          console.log('Documento atualizado com sucesso');
+        } else {
+          console.error('Mensagem não encontrada localmente:', id);
+        }
+      } catch (error) {
+        console.error('Erro ao atualizar o documento:', error);
+      }
     },
     toggleMenu() {
       this.menu = !this.menu;
     },
-    
   },
 };
 </script>

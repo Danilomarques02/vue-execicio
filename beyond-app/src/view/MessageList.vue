@@ -1,8 +1,5 @@
-:<template>
+<template>
   <v-card dark flat>
-    
-
-
 <v-app>
   <v-main>
     <v-app-bar color="#005954">
