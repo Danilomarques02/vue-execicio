@@ -4,7 +4,7 @@
       <v-container fill-height>
         <v-layout align-center justify-center>
           <v-flex xs12 sm8 md4>
-            <v-img src="../assets/logo.png" max-height="140px" contain />
+            <v-img src="../assets/logo3.png" max-height="140px" contain />
 
             <v-card-title class="text-h6">Faça Login</v-card-title>
             <v-card-text>
@@ -26,7 +26,7 @@
                 />
                 <router-link class="link" to="/cadastro">Cadastre-se</router-link>
                 <div class="forms">
-                  <v-btn rounded dark color="#52BA7D" block type="submit">Login</v-btn>
+                  <v-btn rounded dark color="#1d405c" block type="submit">Login</v-btn>
                 </div>
                 <div class="icon-links">
                   <v-icon @click="loginGoogle" >mdi-google</v-icon>
@@ -80,7 +80,7 @@ export default {
 
 <style scoped>
 .green-background {
-  background-color: #009688;
+  background-color: #082338;
 }
 
 .rounded-input {

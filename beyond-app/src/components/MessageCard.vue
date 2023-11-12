@@ -7,25 +7,25 @@
       <div class="nome">
         <v-card-subtitle class="font-weight-bold">
           <router-link
-            style="color: #013d3b; text-decoration: none;"
+            style="color: #c2c2c2; text-decoration: none;"
             :to="'/perfil/' + messageProp.nome + '/' + messageProp.user"
           >{{ messageProp.nome }}</router-link>
         </v-card-subtitle>
         <v-card-subtitle class="user">
           <router-link
-            style="color: #013d3b;"
+            style="color: #c2c2c2;"
             :to="'/perfil/' + messageProp.nome + '/' + messageProp.user"
           >{{ '@' + messageProp.user }}</router-link>
         </v-card-subtitle>
       </div>
     </div>
 
-    <v-card-text class="distancia">
+    <v-card-text style="color: #c2c2c2;" class="distancia">
       <div>{{ messageProp.text }}</div>
       <div class="d-flex justify-end">
         <v-dialog v-model="dialog" persistent max-width="600px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn icon color="808080" v-bind="attrs" v-on="on">
+            <v-btn icon color="#c2c2c2" v-bind="attrs" v-on="on">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
           </template>
@@ -57,7 +57,7 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-        <v-btn @click="deleteMessage()" icon color="808080">
+        <v-btn @click="deleteMessage()" icon color="#c2c2c2">
           <v-icon>mdi-delete</v-icon>
         </v-btn>
       </div>
@@ -75,7 +75,7 @@ export default {
   },
   computed: {
     CorDaMensagem() {
-      return this.messageProp.nome !== "EU" ? "teal" : "sea green";
+      return this.messageProp.nome !== "EU" ? "grey darken-4" : "grey darken-2";
     },
   },
   props: {

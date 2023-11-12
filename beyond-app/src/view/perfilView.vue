@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app color="#009688">
+    <v-app-bar app color="#082338">
       <v-btn icon @click="$router.push(`/messageList`)">
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
@@ -26,8 +26,8 @@
               </v-card-text>
               <v-divider></v-divider>
               <v-card-actions>
-                <v-btn color="#009688" class="follow-button">Seguir</v-btn>
-                <v-btn color="#009688" @click="$router.push(`/chat/${user && user.nome ? user.nome : ''}`)" class="publications-button">Publicações</v-btn>
+                <v-btn color="#082338" class="follow-button">Seguir</v-btn>
+                <v-btn color="#082338" @click="$router.push(`/chat/${user && user.nome ? user.nome : ''}`)" class="publications-button">Publicações</v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -47,7 +47,7 @@
       </v-container>
     </v-main>
 
-    <v-footer app color="#009688" height="100">
+    <v-footer app color="#082338" height="100">
     </v-footer>
   </v-app>
 </template>

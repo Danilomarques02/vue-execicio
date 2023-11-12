@@ -1,19 +1,19 @@
 <template>
   <v-app>
     <v-main>
-      <v-app-bar color="#005954">
+      <v-app-bar color="#082338">
         <v-icon @click="toggleMenu">mdi-view-sequential</v-icon>
         <div class="d-flex align-center justify-center" style="flex-grow: 1;">
           <v-toolbar-title>{{ user.nome }}</v-toolbar-title>
         </div>
-        <v-btn @click="deletarAllMessages()" icon color="808080">
+        <v-btn @click="deletarAllMessages()" icon color="#c2c2c2">
           <v-icon>mdi-delete</v-icon>
         </v-btn>
       </v-app-bar>
-      <v-card v-for="(message, index) in messages" :key="index" :class="message.nome !== 'Eu' ? 'teal' : 'sea green'" outlined class="ma-2">
+      <v-card v-for="(message, index) in messages" :key="index" :class="message.nome !== 'Eu' ? 'grey darken-4' : 'grey darken-2'" outlined class="ma-2">
         <message-card :messageProp="message" :editar="editmessage" @delete="deletarMessage" />
       </v-card>
-      <BottomBar @send-message="addMessage($event)" />
+      <BottomBar @send-message="addMessage($event, userAvatar)" />
       <v-navigation-drawer v-model="menu" app>
         <v-list>
           <v-list-item @click="$router.push(`/perfil/${user.nome}/${user}`)">
@@ -50,7 +50,7 @@
 import { usuarios } from '../data/index';
 import MessageCard from '../components/MessageCard.vue';
 import BottomBar from '../components/BottomBar.vue';
-import { collection, addDoc, doc, updateDoc, deleteDoc,query, where, getDocs } from "firebase/firestore";
+import { collection, addDoc, doc, updateDoc, deleteDoc, query, where, onSnapshot, getDocs } from "firebase/firestore";
 import { db } from '../config/firebase';
 
 export default {
@@ -75,52 +75,96 @@ export default {
         text: usuario.text,
         avatar: usuario.avatar
       });
+      this.setupRealtimeListener();
     }
   },
   methods: {
     async addMessage(e) {
-      if (this.user) {
-        const message = {
-          id: Math.random(),
-          remetente: this.user.nome,
-          nome: e.nome,
-          text: e.text,
-          avatar: this.user.avatar,
-        };
-        try {
-          const docRef = await addDoc(collection(db, 'messages'), message);
-          console.log('Document written with ID: ', docRef.id);
-          message.id = docRef.id;
-        } catch (error) {
-          console.error('Error adding document: ', error);
-        }
-        this.messages.push(message);
+  if (this.user) {
+    const message = {
+      remetente: this.user.nome,
+      nome: e.nome,
+      text: e.text,
+      avatar: this.userAvatar,
+    };
+    try {
+      const docRef = await addDoc(collection(db, 'messages'), message);
+      console.log('Documento escrito com identificação: ', docRef.id);
+
+      // Aguarda a confirmação do Firestore antes de adicionar localmente
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Atualiza o ID local com o ID atribuído pelo Firestore
+      const localMessageIndex = this.messages.findIndex(msg => msg.remetente === this.user.nome && !msg.id);
+      if (localMessageIndex !== -1) {
+        this.$set(this.messages, localMessageIndex, { ...message, id: docRef.id });
+      }
+    } catch (error) {
+      console.error('Erro ao adicionar documento: ', error);
+    }
+  }
+},
+
+
+
+    async deletarAllMessages() {
+      try {
+        const q = query(collection(db, 'messages'), where('remetente', '==', this.user.nome));
+        const querySnapshot = await getDocs(q);
+        const messageIds = querySnapshot.docs.map(doc => doc.id);
+        await Promise.all(messageIds.map(async (id) => {
+          const messageRef = doc(db, 'messages', id);
+          await deleteDoc(messageRef);
+        }));
+        this.messages = [];
+        console.log('Todas as mensagens do usuário foram deletadas com sucesso');
+      } catch (error) {
+        console.error('Erro ao deletar as mensagens do usuário:', error);
       }
     },
 
-    async deletarAllMessages() {
+    async setupRealtimeListener() {
   try {
+    // Verifica se o ouvinte já está configurado
+    if (this.unsubscribe) {
+      console.log('Ouvinte em tempo real já está configurado.');
+      return;
+    }
+
     const q = query(collection(db, 'messages'), where('remetente', '==', this.user.nome));
-    const querySnapshot = await getDocs(q);
-    const messageIds = querySnapshot.docs.map(doc => doc.id);
-    await Promise.all(messageIds.map(async (id) => {
-      const messageRef = doc(db, 'messages', id);
-      await deleteDoc(messageRef);
-    }));
-    this.messages = [];
-    console.log('Todas as mensagens do usuário foram deletadas com sucesso');
+    this.unsubscribe = onSnapshot(q, (snapshot) => {
+      const firestoreMessages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+      // Atualiza as mensagens localmente apenas com as do Firestore que não existem localmente
+      this.messages = [...this.messages, ...firestoreMessages.filter(firestoreMessage => !this.messages.some(localMessage => localMessage.id === firestoreMessage.id))];
+    });
+
+    this.$once('hook:beforeDestroy', () => {
+      if (this.unsubscribe) {
+        this.unsubscribe();
+        this.unsubscribe = null;
+      }
+    });
   } catch (error) {
-    console.error('Erro ao deletar as mensagens do usuário:', error);
+    console.error('Erro ao configurar o ouvinte em tempo real:', error);
   }
 },
+
 
     async deletarMessage(id) {
       try {
         const messageIndex = this.messages.findIndex(message => message.id === id);
         if (messageIndex !== -1) {
-          this.messages.splice(messageIndex, 1); 
-          const messageRef = doc(db, 'messages', id);
+          const messageRef = doc(db, 'messages', String(id)); // Convertendo id para string
+          console.log('Deletando documento com ID:', String(id));
           await deleteDoc(messageRef);
+
+          // Aguarda a confirmação de que a mensagem foi removida antes de atualizar localmente
+          await new Promise(resolve => setTimeout(resolve, 1000));
+
+          // Remova a mensagem localmente apenas se a exclusão no Firestore for bem-sucedida
+          this.messages.splice(messageIndex, 1);
+
           console.log('Documento deletado com sucesso');
         } else {
           console.error('Mensagem não encontrada localmente:', id);
@@ -129,7 +173,7 @@ export default {
         console.error('Erro ao deletar o documento:', error);
       }
     },
-    
+
     async editmessage(id, novoTexto) {
       try {
         const messageIndex = this.messages.findIndex(message => message.id === id);
@@ -148,6 +192,7 @@ export default {
         console.error('Erro ao atualizar o documento:', error);
       }
     },
+
     toggleMenu() {
       this.menu = !this.menu;
     },

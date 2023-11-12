@@ -4,7 +4,7 @@
       <v-container fill-height>
         <v-layout align-center justify-center>
           <v-flex xs12 sm8 md4>
-            <v-img src="@/assets/logo.png" max-height="140px" contain></v-img>
+            <v-img src="@/assets/logo3.png" max-height="140px" contain></v-img>
             <v-card-title class="text-h6">Faça o seu cadastro</v-card-title>
             <v-card-text>
               <v-form @submit.prevent="cadastrar">
@@ -30,7 +30,7 @@
                 <v-row>
                   <v-col cols="12">
                     <div class="forms">
-                      <v-btn type="submit" rounded dark color="#52BA7D">Cadastre-se</v-btn>
+                      <v-btn type="submit" rounded dark color="#1d405c">Cadastre-se</v-btn>
                     </div>
                   </v-col>
                 </v-row>
@@ -118,7 +118,7 @@ export default {
 
 <style scoped>
 .green-background {
-  background-color: #009688;
+  background-color: #082338;
 }
 .rounded-input {
   border-radius: 40px;

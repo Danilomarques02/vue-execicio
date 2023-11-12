@@ -2,7 +2,7 @@
   <v-card dark flat>
 <v-app>
   <v-main>
-    <v-app-bar color="#005954">
+    <v-app-bar color="#082338">
       <v-icon @click="toggleMenu">mdi-view-sequential</v-icon>
       <div class="d-flex align-center justify-center" style="flex-grow: 1;">
         <v-toolbar-title>Todas as Publicações</v-toolbar-title>
@@ -10,14 +10,14 @@
       <v-switch class="dark"
       v-model="$vuetify.theme.dark"
       ></v-switch>
-      <v-btn @click="deletarAllMessages" icon color="808080">
+      <v-btn @click="deletarAllMessages" icon color="#c2c2c2">
         <v-icon>mdi-delete</v-icon>
       </v-btn>
     </v-app-bar>
-       <v-card v-for="(message, index) in messages" :key="index" :class="message.nome !== 'Eu' ? 'teal' : 'sea green'" outlined class="ma-2">
+       <v-card v-for="(message, index) in messages" :key="index" :class="message.nome !== 'Eu' ? '#1d405c' : '#1d405c'" outlined class="ma-2">
        <message-card :messageProp="message" :editar="editmessage" @delete="deletarMessage" />
        </v-card>
-    <BottomBar @send-message="addMessage($event)" />
+    <BottomBar @send-message="addMessage($event )" />
     <v-navigation-drawer v-model="menu" app>
       <v-list>
         <v-list-item>
