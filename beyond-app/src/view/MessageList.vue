@@ -52,116 +52,147 @@ import { usuarios } from '../data/index';
 import MessageCard from '../components/MessageCard.vue';
 import BottomBar from '../components/BottomBar.vue';
 import router from '../router/index'; 
+import { addDoc, collection } from "firebase/firestore";
+import { db } from '@/config/firebase';
+
+
 
 export default {
-components: {
-  MessageCard,
-  BottomBar
-},
-data() {
-  const allMessages = [];
+  components: {
+    MessageCard,
+    BottomBar
+  },
+  data() {
+    const allMessages = [];
 
-  usuarios.forEach((user) => {
-    if (Array.isArray(user.messages)) {
-      allMessages.push(...user.messages);
-    }
-  });
-
-  return {
-    messages: allMessages.concat([
-      {
-        id: 1,
-        nome: "Maria da Conceição",
-        user: "Maria",
-        text: "Ainda estou aprendendo a mexer, mas estou gostando",
-        avatar: "https://img.elo7.com.br/product/zoom/2BD68CE/portrait-digital-em-um-estilo-fofinho-baby.jpg",
-      },
-      {
-        id: 2,
-        nome: "Davi Felipe",
-        user: "Davi",
-        text: "Olá sou Davi, e aqui parece ser muito legal",
-        avatar: "https://i.pinimg.com/736x/81/b6/12/81b612d54083f318996e04ab46c2a355.jpg",
-      },
-      {
-        id: 3,
-        nome: "Wesley da Silva",
-        user: "Wesley",
-        text: "Olá sou Wesley, entrei aqui pela primeira vez",
-        avatar: "https://i.pinimg.com/1200x/03/a8/11/03a811b919bead0487c8458d18f388af.jpg",
+    usuarios.forEach((user) => {
+      if (Array.isArray(user.messages)) {
+        allMessages.push(...user.messages);
       }
-    ]),
-    menu: false
-  };
-},
+    });
 
-computed: {
-  userAvatar() {
-    return localStorage.getItem('photoURL');
-  },
-  userDisplayNome(){
-    const nome = localStorage.getItem('nome');
-    const email = localStorage.getItem('email')
-    return nome || (email ? email.slice(0, email.indexOf('@')) : '');
-  },
-
-  userDisplayUser(){
-    const user = localStorage.getItem('user');
-    const email = localStorage.getItem('email')
-    return user || (email ? '@' + email.slice(0, email.indexOf('@')) : '');
-  },
-},
-methods: {
-  sair() {
-    this.$vuetify.theme.dark = false;
-    this.$store.dispatch("logout")
-.then(() => {
-  localStorage.clear(); 
-  router.push('/'); 
-})
-.catch((error) => {
-  console.error(error);
-});
-},
-  addMessage(e) {
-    const message = {
-      id: Math.random(),
-      nome: localStorage.getItem('nome'),
-      user: localStorage.getItem('user'),
-      text: e.text,
-      avatar: this.userAvatar, 
+    return {
+      messages: allMessages.concat([
+        {
+          id: 1,
+          nome: "Maria da Conceição",
+          user: "Maria",
+          text: "Ainda estou aprendendo a mexer, mas estou gostando",
+          avatar: "https://img.elo7.com.br/product/zoom/2BD68CE/portrait-digital-em-um-estilo-fofinho-baby.jpg",
+        },
+        {
+          id: 2,
+          nome: "Davi Felipe",
+          user: "Davi",
+          text: "Olá sou Davi, e aqui parece ser muito legal",
+          avatar: "https://i.pinimg.com/736x/81/b6/12/81b612d54083f318996e04ab46c2a355.jpg",
+        },
+        {
+          id: 3,
+          nome: "Wesley da Silva",
+          user: "Wesley",
+          text: "Olá sou Wesley, entrei aqui pela primeira vez",
+          avatar: "https://i.pinimg.com/1200x/03/a8/11/03a811b919bead0487c8458d18f388af.jpg",
+        }
+      ]),
+      menu: false
     };
+  },
+  computed: {
+    userAvatar() {
+      return localStorage.getItem('photoURL');
+    },
+    userDisplayNome() {
+      const nome = localStorage.getItem('nome');
+      const email = localStorage.getItem('email')
+      return nome || (email ? email.slice(0, email.indexOf('@')) : '');
+    },
+    userDisplayUser() {
+      const user = localStorage.getItem('user');
+      const email = localStorage.getItem('email')
+      return user || (email ? '@' + email.slice(0, email.indexOf('@')) : '');
+    },
+  },
+  methods: {
+    sair() {
+      this.$vuetify.theme.dark = false;
+      this.$store.dispatch("logout")
+        .then(() => {
+          localStorage.clear();
+          router.push('/');
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+    async addMessage(e) {
+      const message = {
+        id: Math.random(),
+        nome: localStorage.getItem('nome'),
+        user: localStorage.getItem('user'),
+        text: e.text,
+        avatar: this.userAvatar,
+      };
+      try {
+    const docRef = await addDoc(collection(db, "messages"), message);
+    console.log("Document written with ID: ", docRef.id);
     this.messages.push(message);
-  },
-  deletarAllMessages() {
-    this.messages = [];
-  },
-  deletarMessage(id) {
-    this.messages = this.messages.filter((message) => message.id !== id);
-  },
-  editmessage(id, novoTexto) {
-    const message = this.messages.find((message) => message.id === id);
-    if (message) {
-      message.text = novoTexto;
-    }
-  },
-  toggleMenu() {
-    this.menu = !this.menu;
-  },
-  goToProfile() {
-    this.$router.push(`/perfil/${this.userDisplayNome}/${this.userDisplayUser}`);
-  },
-  goToAllUsers() {
-    this.$router.push('/todosUsuarios');
+  } catch (error) {
+    console.error("Error adding document: ", error);
   }
-},
-beforeCreate() {
-  this.$store.dispatch("fetchUser");
-},
+    },
+    deletarAllMessages() {
+      this.messages = [];
+    },
+    deletarMessage(id) {
+      this.messages = this.messages.filter((message) => message.id !== id);
+    },
+    editmessage(id, novoTexto) {
+      const message = this.messages.find((message) => message.id === id);
+      if (message) {
+        message.text = novoTexto;
+      }
+    },
+    toggleMenu() {
+      this.menu = !this.menu;
+    },
+    goToProfile() {
+      this.$router.push(`/perfil/${this.userDisplayNome}/${this.userDisplayUser}`);
+    },
+    goToAllUsers() {
+      this.$router.push('/todosUsuarios');
+    },
+  },
+  beforeCreate() {
+    this.$store.dispatch("fetchUser");
+  },
 };
+
 </script>
 <style>
-.dark{
+.dark {
   height: 20px;
 }
 </style>
+ssages: allMessages.concat([
+        {
+          id: 1,
+          nome: "Maria da Conceição",
+          user: "Maria",
+          text: "Ainda estou aprendendo a mexer, mas estou gostando",
+          avatar: "https://img.elo7.com.br/product/zoom/2BD68CE/portrait-digital-em-um-estilo-fofinho-baby.jpg",
+        },
+        {
+          id: 2,
+          nome: "Davi Felipe",
+          user: "Davi",
+          text: "Olá sou Davi, e aqui parece ser muito legal",
+          avatar: "https://i.pinimg.com/736x/81/b6/12/81b612d54083f318996e04ab46c2a355.jpg",
+        },
+        {
+          id: 3,
+          nome: "Wesley da Silva",
+          user: "Wesley",
+          text: "Olá sou Wesley, entrei aqui pela primeira vez",
+          avatar: "https://i.pinimg.com/1200x/03/a8/11/03a811b919bead0487c8458d18f388af.jpg",
+        }

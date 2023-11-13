@@ -65,6 +65,11 @@ export default {
       user: null,
     };
   },
+  computed: {
+    userAvatar() {
+      return localStorage.getItem('photoURL');
+    },
+  },
   created() {
     const usuario = usuarios.find(user => user.nome === this.$route.params.nome);
     if (usuario) {
@@ -90,11 +95,7 @@ export default {
     try {
       const docRef = await addDoc(collection(db, 'messages'), message);
       console.log('Documento escrito com identificação: ', docRef.id);
-
-      // Aguarda a confirmação do Firestore antes de adicionar localmente
       await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Atualiza o ID local com o ID atribuído pelo Firestore
       const localMessageIndex = this.messages.findIndex(msg => msg.remetente === this.user.nome && !msg.id);
       if (localMessageIndex !== -1) {
         this.$set(this.messages, localMessageIndex, { ...message, id: docRef.id });
@@ -125,7 +126,6 @@ export default {
 
     async setupRealtimeListener() {
   try {
-    // Verifica se o ouvinte já está configurado
     if (this.unsubscribe) {
       console.log('Ouvinte em tempo real já está configurado.');
       return;
@@ -134,8 +134,6 @@ export default {
     const q = query(collection(db, 'messages'), where('remetente', '==', this.user.nome));
     this.unsubscribe = onSnapshot(q, (snapshot) => {
       const firestoreMessages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-      // Atualiza as mensagens localmente apenas com as do Firestore que não existem localmente
       this.messages = [...this.messages, ...firestoreMessages.filter(firestoreMessage => !this.messages.some(localMessage => localMessage.id === firestoreMessage.id))];
     });
 
@@ -149,8 +147,6 @@ export default {
     console.error('Erro ao configurar o ouvinte em tempo real:', error);
   }
 },
-
-
     async deletarMessage(id) {
       try {
         const messageIndex = this.messages.findIndex(message => message.id === id);
@@ -158,13 +154,8 @@ export default {
           const messageRef = doc(db, 'messages', String(id)); // Convertendo id para string
           console.log('Deletando documento com ID:', String(id));
           await deleteDoc(messageRef);
-
-          // Aguarda a confirmação de que a mensagem foi removida antes de atualizar localmente
           await new Promise(resolve => setTimeout(resolve, 1000));
-
-          // Remova a mensagem localmente apenas se a exclusão no Firestore for bem-sucedida
           this.messages.splice(messageIndex, 1);
-
           console.log('Documento deletado com sucesso');
         } else {
           console.error('Mensagem não encontrada localmente:', id);
