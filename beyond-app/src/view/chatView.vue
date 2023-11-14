@@ -13,7 +13,7 @@
       <v-card v-for="(message, index) in messages" :key="index" :class="message.nome !== 'Eu' ? 'grey darken-4' : 'grey darken-2'" outlined class="ma-2">
         <message-card :messageProp="message" :editar="editmessage" @delete="deletarMessage" />
       </v-card>
-      <BottomBar @send-message="addMessage($event, userAvatar)" />
+      <BottomBar @send-message="addMessage" />
       <v-navigation-drawer v-model="menu" app>
         <v-list>
           <v-list-item @click="$router.push(`/perfil/${user.nome}/${user}`)">
@@ -85,28 +85,26 @@ export default {
   },
   methods: {
     async addMessage(e) {
-  if (this.user) {
-    const message = {
-      remetente: this.user.nome,
-      nome: e.nome,
-      text: e.text,
-      avatar: this.userAvatar,
-    };
-    try {
-      const docRef = await addDoc(collection(db, 'messages'), message);
-      console.log('Documento escrito com identificação: ', docRef.id);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      const localMessageIndex = this.messages.findIndex(msg => msg.remetente === this.user.nome && !msg.id);
-      if (localMessageIndex !== -1) {
-        this.$set(this.messages, localMessageIndex, { ...message, id: docRef.id });
+      if (this.user) {
+        const message = {
+          remetente: this.user.nome,
+          nome: e.nome,
+          text: e.text,
+          avatar: this.userAvatar,
+        };
+        try {
+          const docRef = await addDoc(collection(db, 'messages'), message);
+          console.log('Documento escrito com identificação: ', docRef.id);
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          const localMessageIndex = this.messages.findIndex(msg => msg.remetente === this.user.nome && !msg.id);
+          if (localMessageIndex !== -1) {
+            this.$set(this.messages, localMessageIndex, { ...message, id: docRef.id });
+          }
+        } catch (error) {
+          console.error('Erro ao adicionar documento: ', error);
+        }
       }
-    } catch (error) {
-      console.error('Erro ao adicionar documento: ', error);
-    }
-  }
-},
-
-
+    },
 
     async deletarAllMessages() {
       try {
@@ -125,33 +123,34 @@ export default {
     },
 
     async setupRealtimeListener() {
-  try {
-    if (this.unsubscribe) {
-      console.log('Ouvinte em tempo real já está configurado.');
-      return;
-    }
+      try {
+        if (this.unsubscribe) {
+          console.log('Ouvinte em tempo real já está configurado.');
+          return;
+        }
 
-    const q = query(collection(db, 'messages'), where('remetente', '==', this.user.nome));
-    this.unsubscribe = onSnapshot(q, (snapshot) => {
-      const firestoreMessages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      this.messages = [...this.messages, ...firestoreMessages.filter(firestoreMessage => !this.messages.some(localMessage => localMessage.id === firestoreMessage.id))];
-    });
+        const q = query(collection(db, 'messages'), where('remetente', '==', this.user.nome));
+        this.unsubscribe = onSnapshot(q, (snapshot) => {
+          const firestoreMessages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          this.messages = [...this.messages, ...firestoreMessages.filter(firestoreMessage => !this.messages.some(localMessage => localMessage.id === firestoreMessage.id))];
+        });
 
-    this.$once('hook:beforeDestroy', () => {
-      if (this.unsubscribe) {
-        this.unsubscribe();
-        this.unsubscribe = null;
+        this.$once('hook:beforeDestroy', () => {
+          if (this.unsubscribe) {
+            this.unsubscribe();
+            this.unsubscribe = null;
+          }
+        });
+      } catch (error) {
+        console.error('Erro ao configurar o ouvinte em tempo real:', error);
       }
-    });
-  } catch (error) {
-    console.error('Erro ao configurar o ouvinte em tempo real:', error);
-  }
-},
+    },
     async deletarMessage(id) {
       try {
         const messageIndex = this.messages.findIndex(message => message.id === id);
         if (messageIndex !== -1) {
-          const messageRef = doc(db, 'messages', String(id)); // Convertendo id para string
+          // Use a função deleteDoc corretamente importada
+          const messageRef = doc(db, 'messages', String(id));
           console.log('Deletando documento com ID:', String(id));
           await deleteDoc(messageRef);
           await new Promise(resolve => setTimeout(resolve, 1000));

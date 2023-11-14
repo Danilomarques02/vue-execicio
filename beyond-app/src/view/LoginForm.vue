@@ -10,6 +10,7 @@
             <v-card-text>
               <v-form @submit.prevent="login" ref="loginForm">
                 <v-text-field
+                  color="#c2c2c2"
                   v-model="user.email"
                   label="Email"
                   outlined
@@ -17,6 +18,7 @@
                   block
                 />
                 <v-text-field
+                color="#c2c2c2"
                   v-model="user.password"
                   type="password"
                   label="Senha"
@@ -100,6 +102,9 @@ export default {
 }
 
 .link {
-  color: black;
+  color:#c2c2c2;
+}
+.text-h6{
+  color: #c2c2c2
 }
 </style>

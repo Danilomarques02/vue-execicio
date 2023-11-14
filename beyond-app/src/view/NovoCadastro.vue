@@ -10,16 +10,16 @@
               <v-form @submit.prevent="cadastrar">
                 <v-row>
                   <v-col cols="6">
-                    <v-text-field v-model="user.nome" label="Nome" outlined class="rounded-input" block :rules="rules.nome"></v-text-field>
-                    <v-text-field v-model="user.usuario" label="Usuário" outlined class="rounded-input" block :rules="rules.user"></v-text-field>
-                    <v-text-field v-model="user.email" label="Email" outlined class="rounded-input" block :rules="rules.email"></v-text-field>
+                    <v-text-field  color= "#c2c2c2" v-model="user.nome" label="Nome" outlined class="rounded-input" block :rules="rules.nome"></v-text-field>
+                    <v-text-field  color= "#c2c2c2" v-model="user.usuario" label="Usuário" outlined class="rounded-input" block :rules="rules.user"></v-text-field>
+                    <v-text-field  color= "#c2c2c2" v-model="user.email" label="Email" outlined class="rounded-input" block :rules="rules.email"></v-text-field>
                   </v-col>
                   <v-col cols="6">
-                    <v-text-field v-model="user.telefone" label="Telefone" outlined class="rounded-input" block :rules="rules.telefone"></v-text-field>
-                    <v-text-field v-model="user.password" label="Senha" type="password" outlined class="rounded-input" block :rules="rules.password"></v-text-field>
-                    <v-text-field v-model="user.confirmPassword" label="Confirmar senha" type="password" outlined class="rounded-input" block :rules="rules.password"></v-text-field>
+                    <v-text-field  color= "#c2c2c2" v-model="user.telefone" label="Telefone" outlined class="rounded-input" block :rules="rules.telefone"></v-text-field>
+                    <v-text-field  color= "#c2c2c2" v-model="user.password" label="Senha" type="password" outlined class="rounded-input" block :rules="rules.password"></v-text-field>
+                    <v-text-field  color= "#c2c2c2" v-model="user.confirmPassword" label="Confirmar senha" type="password" outlined class="rounded-input" block :rules="rules.password"></v-text-field>
                   </v-col>
-                  <v-file-input v-model="file" label="Escolher Foto" outlined class="rounded-input" block @change="Image"></v-file-input>
+                  <v-file-input  color= "#c2c2c2" v-model="file" label="Escolher Foto" outlined class="rounded-input" block @change="Image"></v-file-input>
                 </v-row>
                 <div class="error-message">{{ passwordError }}</div>
                 <v-row>
@@ -122,6 +122,7 @@ export default {
 }
 .rounded-input {
   border-radius: 40px;
+  color: #c2c2c2;
 }
 .forms {
   margin: 0 auto;
@@ -129,10 +130,13 @@ export default {
   width: 40%;
 }
 .link {
-  color: black;
+  color: #c2c2c2;
 }
 .error-message {
   color: red;
   font-size: 12px;
+}
+.text-h6{
+  color: #c2c2c2;
 }
 </style>
