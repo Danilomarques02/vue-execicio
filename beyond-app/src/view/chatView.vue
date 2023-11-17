@@ -107,20 +107,21 @@ export default {
     },
 
     async deletarAllMessages() {
-      try {
-        const q = query(collection(db, 'messages'), where('remetente', '==', this.user.nome));
-        const querySnapshot = await getDocs(q);
-        const messageIds = querySnapshot.docs.map(doc => doc.id);
-        await Promise.all(messageIds.map(async (id) => {
-          const messageRef = doc(db, 'messages', id);
-          await deleteDoc(messageRef);
-        }));
-        this.messages = [];
-        console.log('Todas as mensagens do usuário foram deletadas com sucesso');
-      } catch (error) {
-        console.error('Erro ao deletar as mensagens do usuário:', error);
-      }
-    },
+  try {
+    const q = query(collection(db, 'messages'), where('remetente', '==', this.user.nome));
+    const querySnapshot = await getDocs(q);
+    const messageIds = querySnapshot.docs.map(doc => doc.id);
+    await Promise.all(messageIds.map(async (id) => {
+      const messageRef = doc(db, 'messages', id); 
+      await deleteDoc(messageRef);
+    }));
+    this.messages = [];
+    console.log('Todas as mensagens do usuário foram deletadas com sucesso');
+  } catch (error) {
+    console.error('Erro ao deletar as mensagens do usuário:', error);
+  }
+},
+
 
     async setupRealtimeListener() {
       try {
@@ -149,7 +150,6 @@ export default {
       try {
         const messageIndex = this.messages.findIndex(message => message.id === id);
         if (messageIndex !== -1) {
-          // Use a função deleteDoc corretamente importada
           const messageRef = doc(db, 'messages', String(id));
           console.log('Deletando documento com ID:', String(id));
           await deleteDoc(messageRef);

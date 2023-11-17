@@ -13,7 +13,6 @@
                   color="#c2c2c2"
                   v-model="user.email"
                   label="Email"
-                  outlined
                   class="rounded-input"
                   block
                 />
@@ -22,7 +21,6 @@
                   v-model="user.password"
                   type="password"
                   label="Senha"
-                  outlined
                   class="rounded-input"
                   block
                 />
@@ -87,6 +85,7 @@ export default {
 
 .rounded-input {
   border-radius: 40px;
+  color:#c2c2c2;
 }
 
 .forms {

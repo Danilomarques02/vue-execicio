@@ -12,7 +12,7 @@
             <v-icon>mdi-delete</v-icon>
           </v-btn>
         </v-app-bar>
-        <v-card v-for="(message, index) in messages" :key="index" :class="message.nome !== 'Eu' ? '#1d405c' : '#1d405c'" outlined class="ma-2">
+        <v-card v-for="(message, index) in messages" :key="index" :class="message.nome !== 'Eu' ? 'grey darken-4' : 'grey darken-2'" outlined class="ma-2">
           <message-card :messageProp="message" :editar="editmessage" @delete="deletarMessage" />
         </v-card>
         <BottomBar @send-message="addMessage" />
@@ -46,8 +46,18 @@
 </template>
 
 <script>
-import { addDoc, collection, doc, deleteDoc, onSnapshot, query, where, updateDoc } from "firebase/firestore";
-import { db } from "@/config/firebase";
+import {
+  collection,
+  doc,
+  deleteDoc,
+  onSnapshot,
+  query,
+  where,
+  updateDoc,
+  getDocs,
+  addDoc
+} from "firebase/firestore";
+import { auth, db } from "@/config/firebase";
 import MessageCard from '../components/MessageCard.vue';
 import BottomBar from '../components/BottomBar.vue';
 import router from '../router/index';
@@ -98,20 +108,9 @@ export default {
     userAvatar() {
       return localStorage.getItem('photoURL');
     },
-    userDisplayNome() {
-      const nome = localStorage.getItem('nome');
-      const email = localStorage.getItem('email');
-      return nome || (email ? email.slice(0, email.indexOf('@')) : '');
-    },
-    userDisplayUser() {
-      const user = localStorage.getItem('user');
-      const email = localStorage.getItem('email');
-      return user || (email ? '@' + email.slice(0, email.indexOf('@')) : '');
-    },
   },
   methods: {
     sair() {
-      this.$vuetify.theme.dark = false;
       this.$store.dispatch("logout")
         .then(() => {
           localStorage.clear();
@@ -122,45 +121,48 @@ export default {
         });
     },
     async addMessage(e) {
-      const user = localStorage.getItem('user');
+      const id = auth.currentUser 
+      const querySnapShot = await getDocs(collection(db, "users", id));
+      const user= querySnapShot.docs.map((doc) => doc.data());
       const newMessage = {
-        nome: localStorage.getItem('nome'),
-        user: user,
+        nome: user.nome,
+        user: user.email,
         text: e.text,
         avatar: this.userAvatar,
       };
 
       try {
         const docRef = await addDoc(collection(db, "messages"), newMessage);
-        console.log("Document written with ID: ", docRef.id);
+        console.log("Documento escrito com identificação: ", docRef.id);
       } catch (error) {
-        console.error("Error adding document: ", error);
+        console.error("Erro ao adicionar documento: ", error);
       }
     },
 
     async deletarAllMessages() {
       try {
-        const q = query(collection(db, 'messages'), where('user', '==', localStorage.getItem('user')));
-        await onSnapshot(q, (snapshot) => {
-          snapshot.forEach((doc) => {
-            const messageRef = doc(db, 'messages', doc.id);
-            deleteDoc(messageRef);
-          });
-        });
+        const user = localStorage.getItem('user');
+        const q = query(collection(db, 'messages'), where('user', '==', user));
+        const querySnapshot = await getDocs(q);
+        const messageIds = querySnapshot.docs.map(doc => doc.id);
 
-        console.log('All messages deleted successfully');
+        await Promise.all(messageIds.map(async (messageId) => {
+          const messageRef = doc(db, 'messages', messageId);
+          await deleteDoc(messageRef);
+        }));
+
+        console.log('Todas as mensagens do usuário atual foram excluídas com sucesso');
       } catch (error) {
-        console.error('Error deleting messages:', error);
+        console.error('Erro ao excluir mensagens:', error);
       }
     },
-
     async deletarMessage(id) {
       try {
         const messageRef = doc(db, 'messages', String(id));
         await deleteDoc(messageRef);
-        console.log('Document deleted successfully');
+        console.log('Documento excluído com sucesso');
       } catch (error) {
-        console.error('Error deleting document:', error);
+        console.error('Erro ao excluir documento:', error);
       }
     },
 
@@ -168,9 +170,9 @@ export default {
       try {
         const messageRef = doc(db, 'messages', String(id));
         await updateDoc(messageRef, { text: novoTexto });
-        console.log('Document updated successfully');
+        console.log('Documento atualizado com sucesso');
       } catch (error) {
-        console.error('Error updating document:', error);
+        console.error('Erro ao atualizar o documento:', error);
       }
     },
     toggleMenu() {
@@ -211,6 +213,8 @@ export default {
 };
 </script>
 
-<style scoped>
-/* Seus estilos aqui */
+<style>
+.dark {
+  height: 20px;
+}
 </style>
