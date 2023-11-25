@@ -18,13 +18,16 @@ export default {
   },
   methods: {
     sendMessage() {
-      const message = {
-        nome: localStorage.getItem('nome'),
-        user: localStorage.getItem('email'),
-        text: this.textInput,
-      };
-      this.$emit('send-message', message);
-      this.textInput = '';  
+      // Verifica se há texto antes de enviar
+      if (this.textInput.trim() !== '') {
+        const message = {
+          nome: localStorage.getItem('nome'),
+          user: localStorage.getItem('email'),
+          text: this.textInput,
+        };
+        this.$emit('send-message', message);
+        this.textInput = '';  
+      } 
     } 
   },
 };
