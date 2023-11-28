@@ -47,7 +47,6 @@
 
 <script>
 import {
-  getDoc,
   collection,
   doc,
   deleteDoc,
@@ -58,7 +57,7 @@ import {
   getDocs,
   addDoc
 } from "firebase/firestore";
-import { auth, db } from "@/config/firebase";
+import { db } from "@/config/firebase";
 import MessageCard from '../components/MessageCard.vue';
 import BottomBar from '../components/BottomBar.vue';
 import router from '../router/index';
@@ -102,17 +101,27 @@ export default {
           avatar: "https://i.pinimg.com/1200x/03/a8/11/03a811b919bead0487c8458d18f388af.jpg",
         }
       ]),
-      menu: false,
-      user: null  // Adicione esta linha para corrigir o erro
+      menu: false
     };
   },
   computed: {
     userAvatar() {
       return localStorage.getItem('photoURL');
     },
+    userDisplayNome() {
+      const nome = localStorage.getItem('nome');
+      const email = localStorage.getItem('email');
+      return nome || (email ? email.slice(0, email.indexOf('@')) : '');
+    },
+    userDisplayUser() {
+      const user = localStorage.getItem('user');
+      const email = localStorage.getItem('email');
+      return user || (email ? '@' + email.slice(0, email.indexOf('@')) : '');
+    },
   },
   methods: {
     sair() {
+      this.$vuetify.theme.dark = false;
       this.$store.dispatch("logout")
         .then(() => {
           localStorage.clear();
@@ -123,144 +132,94 @@ export default {
         });
     },
     async addMessage(e) {
-      const user = auth.currentUser;
-      if (!user) {
-        console.error("Usuário não autenticado");
-        return;
-      }
+      const user = localStorage.getItem('user');
+      const newMessage = {
+        nome: localStorage.getItem('nome'),
+        user: user,
+        text: e.text,
+        avatar: this.userAvatar,
+      };
 
-      const userId = user.uid;
-      const userDocRef = doc(db, "users", userId);
-      const userDoc = await getDoc(userDocRef);
-
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-
-        const newMessage = {
-          nome: userData.nome || "Nome Padrão", // Substitua "Nome Padrão" pelo valor padrão desejado
-          user: userData.email,
-          text: e.text,
-          avatar: this.userAvatar,
-        };
-
-        try {
-          const docRef = await addDoc(collection(db, "messages"), newMessage);
-          console.log("Documento escrito com identificação: ", docRef.id);
-
-          // Adicione a nova mensagem à lista local imediatamente
-          this.messages.push(newMessage);
-
-          // Força a atualização do componente
-          this.$forceUpdate();
-        } catch (error) {
-          console.error("Erro ao adicionar documento: ", error);
-        }
-      } else {
-        console.error("Documento do usuário não encontrado");
+      try {
+        const docRef = await addDoc(collection(db, "messages"), newMessage);
+        console.log("Documento escrito com identificação: ", docRef.id);
+      } catch (error) {
+        console.error("Erro ao adicionar documento: ", error);
       }
     },
+
     async deletarAllMessages() {
-  console.log("Iniciando deletarAllMessages");
-  try {
-    const user = auth.currentUser;
-    if (!user) {
-      console.error("Usuário não autenticado");
-      return;
-    }
+      try {
+        const user = localStorage.getItem('user');
+        const q = query(collection(db, 'messages'), where('user', '==', user));
+        const querySnapshot = await getDocs(q);
+        const messageIds = querySnapshot.docs.map(doc => doc.id);
 
-    const userId = user.uid;
-    console.log("Usuário Atual:", userId);
+        await Promise.all(messageIds.map(async (messageId) => {
+          const messageRef = doc(db, 'messages', messageId);
+          await deleteDoc(messageRef);
+        }));
 
-    const q = query(collection(db, "messages"), where("user", "==", userId));
-    const querySnapshot = await getDocs(q);
-    const messageIds = querySnapshot.docs.map((doc) => doc.id);
-
-    if (messageIds.length === 0) {
-      console.log("Nenhuma mensagem para excluir.");
-      return;
-    }
-
-    await Promise.all(
-      messageIds.map(async (messageId) => {
-        const messageRef = doc(db, "messages", messageId);
-        await deleteDoc(messageRef);
-      })
-    );
-
-    console.log(
-      "Todas as mensagens do usuário atual foram excluídas com sucesso"
-    );
-  } catch (error) {
-    console.error("Erro ao excluir mensagens:", error);
-  } finally {
-    console.log("Finalizando deletarAllMessages");
-  }
-},
+        console.log('Todas as mensagens do usuário atual foram excluídas com sucesso');
+      } catch (error) {
+        console.error('Erro ao excluir mensagens:', error);
+      }
+    },
     async deletarMessage(id) {
       try {
-        const messageRef = doc(db, "messages", String(id));
+        const messageRef = doc(db, 'messages', String(id));
         await deleteDoc(messageRef);
-        console.log("Documento excluído com sucesso");
+        console.log('Documento excluído com sucesso');
       } catch (error) {
-        console.error("Erro ao excluir documento:", error);
+        console.error('Erro ao excluir documento:', error);
       }
     },
+
     async editmessage(id, novoTexto) {
       try {
-        const messageRef = doc(db, "messages", String(id));
+        const messageRef = doc(db, 'messages', String(id));
         await updateDoc(messageRef, { text: novoTexto });
-        console.log("Documento atualizado com sucesso");
+        console.log('Documento atualizado com sucesso');
       } catch (error) {
-        console.error("Erro ao atualizar o documento:", error);
+        console.error('Erro ao atualizar o documento:', error);
       }
     },
     toggleMenu() {
       this.menu = !this.menu;
     },
+
     goToProfile() {
       this.$router.push(`/perfil/${this.userDisplayNome}/${this.userDisplayUser}`);
     },
+
     goToAllUsers() {
       this.$router.push('/todosUsuarios');
     },
-    created() {
-      this.$store.dispatch("fetchUser");
+  },
 
-      let user = auth.currentUser;  // Adicione 'let' para declarar a variável user
+  beforeCreate() {
+    this.$store.dispatch("fetchUser");
 
-      if (!user) {
-        console.error("Usuário não autenticado");
-        return;
-      }
+    const user = localStorage.getItem('user');
+    const messagesCollection = collection(db, "messages");
+    const userMessagesQuery = query(messagesCollection, where('user', '==', user));
 
-      const userId = user.uid;
-      const messagesCollection = collection(db, "messages");
-      const userMessagesQuery = query(messagesCollection, where("user", "==", userId));
-
-      onSnapshot(userMessagesQuery, (snapshot) => {
-        console.log('Snapshot recebido:', snapshot.docs.map(doc => doc.data()));
-
-        snapshot.docChanges().forEach((change) => {
-          const message = { id: change.doc.id, ...change.doc.data() };
-          console.log('Mudança de documento:', change.type, message);
-
-          if (change.type === "added") {
-            console.log('Mensagem adicionada:', message);
-            this.messages.push(message);
-          } else if (change.type === "modified") {
-            console.log('Mensagem modificada:', message);
-            const index = this.messages.findIndex((m) => m.id === message.id);
-            this.$set(this.messages, index, message);
-          } else if (change.type === "removed") {
-            console.log('Mensagem removida:', message);
-            const index = this.messages.findIndex((m) => m.id === message.id);
-            this.messages.splice(index, 1);
-          }
-        });
+    onSnapshot(userMessagesQuery, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        const message = { id: change.doc.id, ...change.doc.data() };
+        if (change.type === 'added') {
+          this.messages.push(message);
+        } else if (change.type === 'modified') {
+          const index = this.messages.findIndex((m) => m.id === message.id);
+          this.$set(this.messages, index, message);
+        } else if (change.type === 'removed') {
+          const index = this.messages.findIndex((m) => m.id === message.id);
+          this.messages.splice(index, 1);
+        }
       });
-    }
-  }
-}
+    });
+  },
+};
 </script>
 
 <style>

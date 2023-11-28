@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import router from '@/router';
-import { auth, db } from '@/config/firebase';
+import { auth } from '@/config/firebase';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -10,7 +10,6 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
 } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
 
 Vue.use(Vuex);
 
@@ -55,9 +54,6 @@ export default new Vuex.Store({
 
       try {
         await createUserWithEmailAndPassword(auth, email, password);
-        const user = auth.currentUser;
-        const ref = doc(db, 'users', user.uid);
-        await setDoc(ref, details);
       } catch (error) {
         switch (error.code) {
           case 'auth/email-already-in-use':
@@ -73,7 +69,7 @@ export default new Vuex.Store({
             alert('Senha fraca');
             break;
           default:
-            console.log(error.code)
+            alert('Algo deu errado');
         }
         return;
       }
